@@ -1,332 +1,647 @@
 import SwiftUI
 
 public struct DailyDropsView: View {
-    @State private var blurPhotosForPrivacy = false
-    @State private var showingDossierModal = false
+    @State private var currentIndex: Int = 0
+    @State private var blurPhotos: Bool = false
+    @State private var showingVaultModal: Bool = false
+    @State private var likedPrompt: String? = nil
+    
+    private let candidates = SampleCandidates.candidates
     
     public init() {}
     
     public var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                // Header & Privacy Toggle
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Today's 3 Cosmic Drops (8:00 PM Window)")
-                            .font(.title2.bold())
-                        Text("Curated via Vedic synastry (Ashtakoota + D9) and values alignment. No infinite swiping.")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    Spacer()
+        HStack(spacing: 0) {
+            // Main Feed Area (Phone / Card Viewport)
+            ScrollView(showsIndicators: false) {
+                VStack(spacing: 24) {
+                    // Top Bar
+                    feedHeader
                     
-                    VStack(alignment: .trailing, spacing: 6) {
-                        Toggle(isOn: $blurPhotosForPrivacy) {
-                            HStack(spacing: 4) {
-                                Image(systemName: "eye.slash.fill")
-                                    .foregroundColor(.purple)
-                                Text("Blur Photos Until Match")
-                                    .font(.caption.bold())
-                            }
-                        }
-                        .toggleStyle(.switch)
-                        .controlSize(.mini)
+                    if currentIndex < candidates.count {
+                        let candidate = candidates[currentIndex]
                         
-                        Text("Women-First Privacy Shield")
-                            .font(.system(size: 9))
-                            .foregroundColor(.secondary)
+                        // Hinge / Raya Style Profile Card Deck
+                        VStack(spacing: 16) {
+                            // 1. Hero Photo Card with Scrim & Badges
+                            heroPhotoCard(candidate: candidate)
+                            
+                            // 2. Cosmic & Psychological Translation Card
+                            cosmicSynergyCard(candidate: candidate)
+                            
+                            // 3. Prompt Card 1 (Hinge Style)
+                            promptCard(
+                                title: candidate.prompt1Title,
+                                answer: candidate.prompt1Answer
+                            )
+                            
+                            // 4. The 4 Reality Values Card
+                            valuesOverviewCard(candidate: candidate)
+                            
+                            // 5. Prompt Card 2
+                            promptCard(
+                                title: candidate.prompt2Title,
+                                answer: candidate.prompt2Answer
+                            )
+                        }
+                        .frame(maxWidth: 580)
+                        
+                        // Floating Bottom Action Bar
+                        actionDock(candidate: candidate)
+                            .frame(maxWidth: 580)
+                            .padding(.top, 12)
+                            .padding(.bottom, 40)
+                    } else {
+                        emptyStateView
                     }
                 }
-                
-                Divider()
-                
-                // Drop 1
-                candidateCard(
-                    name: "Ananya Iyer",
-                    age: 28,
-                    role: "Senior Consultant @ McKinsey",
-                    city: "Bangalore",
-                    knotIndex: 91,
-                    banterScore: "Banter Score: 94%",
-                    banterDesc: "Both of you process high-stress workloads through dry wit.",
-                    pacingBadge: "Passion & Pacing: 88%",
-                    pacingDesc: "You crave spontaneous trips; they need 48h notice. Perfect balance.",
-                    icebreaker: "Your Mars harmonizes with her Venus: Ask her what's the one trivial opinion she will defend to the death.",
-                    moonSign: "Taurus (Rohini)",
-                    blurred: blurPhotosForPrivacy,
-                    accentColor: .indigo
-                )
-                
-                // Drop 2
-                candidateCard(
-                    name: "Dr. Siddharth Mehta",
-                    age: 30,
-                    role: "Surgeon @ Manipal Hospital",
-                    city: "Mumbai / Bangalore",
-                    knotIndex: 86,
-                    banterScore: "Intellectual Complicity: 90%",
-                    banterDesc: "Effortless conversation flow across books, ethics, and career growth.",
-                    pacingBadge: "Shared Body Clock: 85%",
-                    pacingDesc: "Both early risers with disciplined morning focus.",
-                    icebreaker: "Classic Scorpio meets Virgo: Ask him about his favorite rainy-day comfort food.",
-                    moonSign: "Virgo (Hasta)",
-                    blurred: blurPhotosForPrivacy,
-                    accentColor: .purple
-                )
-                
-                // Drop 3
-                candidateCard(
-                    name: "Meera Sen",
-                    age: 29,
-                    role: "Founding Designer @ Series-A FinTech",
-                    city: "Delhi NCR / Remote",
-                    knotIndex: 81,
-                    banterScore: "Creative Synergy: 86%",
-                    banterDesc: "Both driven by aesthetic clarity and entrepreneurial autonomy.",
-                    pacingBadge: "Fluid Momentum: 80%",
-                    pacingDesc: "Flexible rhythms that thrive outside strict corporate 9-to-5s.",
-                    icebreaker: "Fire meets Air: Ask her what wildly ambitious side project she's daydreaming about.",
-                    moonSign: "Pisces (Revati)",
-                    blurred: blurPhotosForPrivacy,
-                    accentColor: .blue
-                )
+                .padding(.horizontal, 24)
+                .padding(.top, 20)
             }
-            .padding(28)
-            .frame(maxWidth: 840)
+            .frame(maxWidth: .infinity)
+            .background(KnotTheme.bgDeep)
+            
+            Divider()
+                .background(KnotTheme.border)
+            
+            // Right-Side Live Match Inspector (Desktop Power Feature)
+            if currentIndex < candidates.count {
+                inspectorSidebar(candidate: candidates[currentIndex])
+                    .frame(width: 340)
+                    .background(KnotTheme.bgSurface)
+            }
         }
-        .background(Color(NSColor.windowBackgroundColor))
-        .sheet(isPresented: $showingDossierModal) {
-            familyVaultModal
+        .sheet(isPresented: $showingVaultModal) {
+            if currentIndex < candidates.count {
+                vaultDossierModal(candidate: candidates[currentIndex])
+            }
         }
     }
     
-    private func candidateCard(
-        name: String,
-        age: Int,
-        role: String,
-        city: String,
-        knotIndex: Int,
-        banterScore: String,
-        banterDesc: String,
-        pacingBadge: String,
-        pacingDesc: String,
-        icebreaker: String,
-        moonSign: String,
-        blurred: Bool,
-        accentColor: Color
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 14) {
-                // Avatar with blur privacy option
-                ZStack {
-                    Circle()
-                        .fill(accentColor.opacity(0.15))
-                        .frame(width: 58, height: 58)
-                    Text(String(name.prefix(1)))
-                        .font(.title.bold())
-                        .foregroundColor(accentColor)
-                        .blur(radius: blurred ? 8 : 0)
-                    
-                    if blurred {
-                        Image(systemName: "lock.fill")
-                            .font(.caption)
-                            .foregroundColor(.white)
-                            .padding(4)
-                            .background(Color.black.opacity(0.6))
-                            .clipShape(Circle())
-                    }
+    // MARK: - Feed Header
+    private var feedHeader: some View {
+        HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 8) {
+                    Text("3 Cosmic Drops")
+                        .font(.system(size: 22, weight: .bold, design: .serif))
+                        .foregroundColor(KnotTheme.gold)
+                    Text("• 8:00 PM Shubh Muhurat")
+                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                        .foregroundColor(.secondary)
                 }
-                
-                VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 8) {
-                        Text("\(name), \(age)")
-                            .font(.headline)
+                Text("Curated via Vedic synastry (Ashtakoota + D9) and lifestyle values.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            Spacer()
+            
+            // Privacy Shield Toggle
+            Button(action: { withAnimation { blurPhotos.toggle() } }) {
+                HStack(spacing: 6) {
+                    Image(systemName: blurPhotos ? "eye.slash.fill" : "eye.fill")
+                        .font(.caption)
+                    Text(blurPhotos ? "Shield Active" : "Blur Photos")
+                        .font(.caption.bold())
+                }
+                .foregroundColor(blurPhotos ? KnotTheme.purple : .secondary)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(blurPhotos ? KnotTheme.purple.opacity(0.15) : KnotTheme.bgCard)
+                .overlay(
+                    Capsule()
+                        .stroke(blurPhotos ? KnotTheme.purple.opacity(0.4) : KnotTheme.border, lineWidth: 1)
+                )
+                .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .help("Women-first privacy shield to prevent screenshots")
+        }
+        .frame(maxWidth: 580)
+    }
+    
+    // MARK: - Hero Photo Card
+    private func heroPhotoCard(candidate: CandidateCardData) -> some View {
+        ZStack(alignment: .bottomLeading) {
+            // Gradient Mesh Background simulating high-end photography
+            RoundedRectangle(cornerRadius: 24)
+                .fill(
+                    LinearGradient(
+                        colors: candidate.avatarGrad,
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .frame(height: 480)
+                .overlay(
+                    // Luxury Monogram watermark
+                    Text(String(candidate.name.prefix(1)))
+                        .font(.system(size: 180, weight: .ultraLight, design: .serif))
+                        .foregroundColor(.white.opacity(0.15))
+                        .blur(radius: blurPhotos ? 24 : 0)
+                )
+                .blur(radius: blurPhotos ? 18 : 0)
+            
+            // Scrim Overlay
+            LinearGradient(
+                colors: [.clear, .black.opacity(0.4), .black.opacity(0.92)],
+                startPoint: .center,
+                endPoint: .bottom
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 24))
+            
+            // Profile Info Overlay
+            VStack(alignment: .leading, spacing: 10) {
+                // Verified & Kundli Chips
+                HStack(spacing: 8) {
+                    HStack(spacing: 4) {
                         Image(systemName: "checkmark.seal.fill")
                             .foregroundColor(.blue)
-                            .font(.caption)
-                            .help("Verified Work & Identity Profile")
-                        
-                        Text("Verified Kundli")
-                            .font(.system(size: 9, weight: .bold))
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Color.purple.opacity(0.12))
-                            .foregroundColor(.purple)
-                            .cornerRadius(4)
+                        Text("Verified Identity")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(.white)
                     }
-                    Text(role)
-                        .font(.subheadline)
-                    Text("\(city) • Moon in \(moonSign)")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(.ultraThinMaterial)
+                    .clipShape(Capsule())
+                    
+                    HStack(spacing: 4) {
+                        Image(systemName: "sparkles")
+                            .foregroundColor(KnotTheme.gold)
+                        Text("Verified Kundli")
+                            .font(.system(size: 10, weight: .bold))
+                            .foregroundColor(KnotTheme.gold)
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(.ultraThinMaterial)
+                    .clipShape(Capsule())
+                    
+                    Spacer()
+                    
+                    // Score Disc
+                    ZStack {
+                        Circle()
+                            .fill(KnotTheme.bgDeep.opacity(0.85))
+                            .frame(width: 46, height: 46)
+                            .overlay(
+                                Circle().stroke(KnotTheme.gold.opacity(0.4), lineWidth: 1.5)
+                            )
+                        VStack(spacing: 0) {
+                            Text("\(candidate.knotIndex)")
+                                .font(.system(size: 16, weight: .bold, design: .serif))
+                                .foregroundColor(KnotTheme.gold)
+                            Text("KMVA")
+                                .font(.system(size: 7, weight: .bold, design: .monospaced))
+                                .foregroundColor(.secondary)
+                        }
+                    }
                 }
                 
+                // Name & Age
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(candidate.name)
+                        .font(.system(size: 32, weight: .bold, design: .serif))
+                        .foregroundColor(.white)
+                    Text("\(candidate.age)")
+                        .font(.system(size: 26, weight: .light, design: .serif))
+                        .foregroundColor(.white.opacity(0.8))
+                }
+                
+                // Profession & Education
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "briefcase.fill")
+                            .font(.caption2)
+                            .foregroundColor(KnotTheme.gold)
+                        Text("\(candidate.role) • \(candidate.company)")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.white)
+                    }
+                    
+                    HStack(spacing: 6) {
+                        Image(systemName: "graduationcap.fill")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text(candidate.education)
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.75))
+                    }
+                    
+                    HStack(spacing: 6) {
+                        Image(systemName: "mappin.and.ellipse")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Text("\(candidate.city) • \(candidate.height)")
+                            .font(.caption)
+                            .foregroundColor(.white.opacity(0.75))
+                    }
+                }
+            }
+            .padding(24)
+        }
+        .frame(height: 480)
+        .overlay(
+            RoundedRectangle(cornerRadius: 24)
+                .stroke(KnotTheme.border, lineWidth: 1)
+        )
+    }
+    
+    // MARK: - Cosmic Synergy Card (Psychological Translation)
+    private func cosmicSynergyCard(candidate: CandidateCardData) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Label("Cosmic Synergy & Banter", systemImage: "sparkles")
+                    .font(.system(size: 12, weight: .bold, design: .monospaced))
+                    .foregroundColor(KnotTheme.gold)
+                    .textCase(.uppercase)
                 Spacer()
-                
-                // Composite Score
-                VStack(spacing: 2) {
-                    Text("\(knotIndex)")
-                        .font(.title2.bold())
-                        .foregroundColor(accentColor)
-                    Text("K.N.O.T.")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundColor(.secondary)
-                }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(Color(NSColor.textBackgroundColor))
-                .cornerRadius(10)
+                Text("Moon in \(candidate.moonSign)")
+                    .font(.caption.bold())
+                    .foregroundColor(.secondary)
             }
             
-            // Modern Psychological Translation Badges
+            Divider().background(KnotTheme.border)
+            
+            // Translated Badges
             HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Label(banterScore, systemImage: "face.smiling.fill")
-                        .font(.caption.bold())
-                        .foregroundColor(.indigo)
-                    Text(banterDesc)
-                        .font(.caption2)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(candidate.banterScore)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(KnotTheme.indigo)
+                    Text(candidate.banterDesc)
+                        .font(.caption)
                         .foregroundColor(.secondary)
+                        .lineLimit(2)
                 }
-                .padding(10)
+                .padding(12)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.indigo.opacity(0.06))
-                .cornerRadius(8)
+                .background(KnotTheme.bgDeep)
+                .cornerRadius(12)
                 
-                VStack(alignment: .leading, spacing: 2) {
-                    Label(pacingBadge, systemImage: "flame.fill")
-                        .font(.caption.bold())
-                        .foregroundColor(.purple)
-                    Text(pacingDesc)
-                        .font(.caption2)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(candidate.pacingScore)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(KnotTheme.purple)
+                    Text(candidate.pacingDesc)
+                        .font(.caption)
                         .foregroundColor(.secondary)
+                        .lineLimit(2)
                 }
-                .padding(10)
+                .padding(12)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color.purple.opacity(0.06))
-                .cornerRadius(8)
+                .background(KnotTheme.bgDeep)
+                .cornerRadius(12)
             }
             
             // Dynamic Icebreaker Prompt
             HStack(alignment: .top, spacing: 10) {
-                Image(systemName: "sparkles")
-                    .foregroundColor(.orange)
+                Image(systemName: "quote.opening")
                     .font(.caption)
+                    .foregroundColor(KnotTheme.orange)
                     .padding(.top, 2)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("COSMIC ICEBREAKER")
-                        .font(.system(size: 9, weight: .bold))
-                        .foregroundColor(.orange)
-                    Text(icebreaker)
+                        .font(.system(size: 8, weight: .bold, design: .monospaced))
+                        .foregroundColor(KnotTheme.orange)
+                    Text("Your Mars harmonizes with her Venus: Ask her what's the one trivial opinion she will defend to the death.")
                         .font(.caption)
                         .foregroundColor(.primary)
                 }
             }
-            .padding(10)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.orange.opacity(0.08))
-            .cornerRadius(8)
-            
-            // Actions
-            HStack(spacing: 12) {
-                Button(action: {}) {
-                    Label("Send Intent", systemImage: "paperplane.fill")
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(accentColor)
-                
-                Button(action: { showingDossierModal = true }) {
-                    Label("Family Vault Dossier", systemImage: "doc.badge.arrow.up")
-                }
-                .buttonStyle(.bordered)
-                .help("Download 1-page parent-friendly Kundli & Bio-data")
-                
-                Spacer()
-                
-                Button(action: {}) {
-                    Label("Deep-Dive ₹49", systemImage: "bolt.shield.fill")
-                }
-                .buttonStyle(.plain)
-                .font(.caption.bold())
-                .foregroundColor(.indigo)
-            }
-            .padding(.top, 4)
+            .padding(12)
+            .background(KnotTheme.orange.opacity(0.08))
+            .cornerRadius(10)
         }
         .padding(20)
-        .background(Color(NSColor.controlBackgroundColor))
-        .cornerRadius(12)
+        .background(KnotTheme.bgCard)
+        .cornerRadius(20)
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(KnotTheme.border, lineWidth: 1)
+        )
     }
     
-    // MARK: - Family Vault Dossier Modal
-    private var familyVaultModal: some View {
+    // MARK: - Prompt Card (Hinge Style with Like Heart)
+    private func promptCard(title: String, answer: String) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(title)
+                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                    .foregroundColor(KnotTheme.gold)
+                    .textCase(.uppercase)
+                Spacer()
+                Button(action: {
+                    likedPrompt = title
+                }) {
+                    Image(systemName: likedPrompt == title ? "heart.fill" : "heart")
+                        .foregroundColor(likedPrompt == title ? .red : .secondary)
+                        .font(.system(size: 16))
+                }
+                .buttonStyle(.plain)
+            }
+            
+            Text(answer)
+                .font(.system(size: 18, weight: .regular, design: .serif))
+                .foregroundColor(.white)
+                .lineSpacing(6)
+        }
+        .padding(22)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(KnotTheme.bgCard)
+        .cornerRadius(20)
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(KnotTheme.border, lineWidth: 1)
+        )
+    }
+    
+    // MARK: - Values Overview Card
+    private func valuesOverviewCard(candidate: CandidateCardData) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Label("Real-World Marriage Foundations", systemImage: "heart.text.square.fill")
+                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                .foregroundColor(KnotTheme.gold)
+                .textCase(.uppercase)
+            
+            Divider().background(KnotTheme.border)
+            
+            VStack(spacing: 10) {
+                valuePillRow(icon: "chart.line.uptrend.xyaxis", label: "Finances", value: candidate.financialLabel)
+                valuePillRow(icon: "briefcase.fill", label: "Career Pacing", value: candidate.careerLabel)
+                valuePillRow(icon: "house.fill", label: "Living Dynamics", value: candidate.familyLabel)
+                valuePillRow(icon: "bubble.left.and.bubble.right.fill", label: "Conflict Style", value: candidate.conflictLabel)
+            }
+        }
+        .padding(20)
+        .background(KnotTheme.bgCard)
+        .cornerRadius(20)
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(KnotTheme.border, lineWidth: 1)
+        )
+    }
+    
+    private func valuePillRow(icon: String, label: String, value: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.caption)
+                .foregroundColor(KnotTheme.gold)
+                .frame(width: 20)
+            Text(label)
+                .font(.caption.bold())
+                .foregroundColor(.secondary)
+                .frame(width: 90, alignment: .leading)
+            Spacer()
+            Text(value)
+                .font(.caption)
+                .foregroundColor(.primary)
+                .multilineTextAlignment(.trailing)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(KnotTheme.bgDeep)
+        .cornerRadius(8)
+    }
+    
+    // MARK: - Action Dock (Pass, Vault, Connect)
+    private func actionDock(candidate: CandidateCardData) -> some View {
+        HStack(spacing: 20) {
+            // Pass Button
+            Button(action: nextCandidate) {
+                ZStack {
+                    Circle()
+                        .fill(KnotTheme.bgCard)
+                        .frame(width: 54, height: 54)
+                        .overlay(Circle().stroke(KnotTheme.border, lineWidth: 1))
+                    Image(systemName: "xmark")
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundColor(.secondary)
+                }
+            }
+            .buttonStyle(.plain)
+            .help("Pass introduction")
+            
+            // Family-Ready Vault Button
+            Button(action: { showingVaultModal = true }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "doc.badge.shield.checkmark.fill")
+                        .foregroundColor(KnotTheme.gold)
+                    Text("Family Vault")
+                        .font(.subheadline.bold())
+                        .foregroundColor(.white)
+                }
+                .padding(.horizontal, 18)
+                .frame(height: 54)
+                .background(KnotTheme.bgCard)
+                .overlay(
+                    Capsule().stroke(KnotTheme.gold.opacity(0.35), lineWidth: 1.5)
+                )
+                .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
+            .help("1-Page Parent-Ready Kundli Dossier")
+            
+            // Send Intent Button (Primary CTA)
+            Button(action: nextCandidate) {
+                HStack(spacing: 8) {
+                    Image(systemName: "ring.circle.fill")
+                    Text("Send Intent")
+                        .font(.headline)
+                }
+                .foregroundColor(.black)
+                .padding(.horizontal, 28)
+                .frame(height: 54)
+                .background(KnotTheme.goldGradient)
+                .clipShape(Capsule())
+                .shadow(color: KnotTheme.gold.opacity(0.3), radius: 10, y: 4)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+    
+    // MARK: - Right Inspector Sidebar
+    private func inspectorSidebar(candidate: CandidateCardData) -> some View {
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 20) {
+                Text("Match Insights")
+                    .font(.system(size: 16, weight: .bold, design: .serif))
+                    .foregroundColor(KnotTheme.gold)
+                
+                // Concurrency Monitor
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Label("Active Concurrency", systemImage: "clock.badge.checkmark.fill")
+                            .font(.caption.bold())
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("1 / 3 Slots")
+                            .font(.caption.bold())
+                            .foregroundColor(KnotTheme.emerald)
+                    }
+                    ProgressView(value: 1, total: 3)
+                        .tint(KnotTheme.emerald)
+                    Text("Anti-Ghosting Protected: 48h reply grace timer active on new connections.")
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
+                }
+                .padding(14)
+                .background(KnotTheme.bgCard)
+                .cornerRadius(12)
+                
+                // Shastric Exception Status
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("Shastric Status", systemImage: "checkmark.seal.fill")
+                        .font(.caption.bold())
+                        .foregroundColor(KnotTheme.gold)
+                    
+                    Text("✓ Bhakoot Dosha Cancelled: Planetary rulers share mutual friendship.")
+                        .font(.caption2)
+                        .foregroundColor(.primary)
+                    Text("✓ Manglik Neutral: No adverse Mars placements.")
+                        .font(.caption2)
+                        .foregroundColor(.primary)
+                }
+                .padding(14)
+                .background(KnotTheme.bgCard)
+                .cornerRadius(12)
+                
+                // Quick UPI Deep Dive (₹49)
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Label("Pre-Date Deep-Dive", systemImage: "bolt.shield.fill")
+                            .font(.caption.bold())
+                            .foregroundColor(.orange)
+                        Spacer()
+                        Text("₹49 via UPI")
+                            .font(.caption.bold())
+                            .foregroundColor(.orange)
+                    }
+                    Text("Unlock full AI + Vedic breakdown: Red flags, green flags, and where to take her on a first date.")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    
+                    Button("Unlock Deep Dive (₹49)") {}
+                        .buttonStyle(.borderedProminent)
+                        .tint(KnotTheme.orange)
+                        .controlSize(.small)
+                        .frame(maxWidth: .infinity)
+                }
+                .padding(14)
+                .background(KnotTheme.orange.opacity(0.08))
+                .cornerRadius(12)
+            }
+            .padding(20)
+        }
+    }
+    
+    // MARK: - Empty State
+    private var emptyStateView: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "moon.stars.fill")
+                .font(.system(size: 54))
+                .foregroundColor(KnotTheme.gold)
+            Text("You've Reviewed Today's 3 Drops")
+                .font(.title2.bold())
+            Text("To protect intentionality, K.N.O.T. curates introductions once per day. Your next 3 verified matches arrive tomorrow at 8:00 PM.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: 420)
+            
+            Button("Review Again") {
+                currentIndex = 0
+            }
+            .buttonStyle(.bordered)
+            .tint(KnotTheme.gold)
+        }
+        .padding(.vertical, 80)
+    }
+    
+    // MARK: - Family Vault Modal
+    private func vaultDossierModal(candidate: CandidateCardData) -> some View {
         VStack(spacing: 20) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Family-Ready Vault Dossier")
                         .font(.headline)
-                    Text("A clean, dignified 1-page Kundli & Bio-data document designed to share with parents.")
+                        .foregroundColor(.black)
+                    Text("A museum-grade, parent-ready horoscope sheet with cryptographic verification.")
                         .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.gray)
                 }
                 Spacer()
-                Button("Done") { showingDossierModal = false }
+                Button("Done") { showingVaultModal = false }
+                    .foregroundColor(.black)
             }
             
             Divider()
             
+            // Ivory Sheet
             VStack(alignment: .leading, spacing: 14) {
                 HStack {
-                    Text("CONFIDENTIAL MARRIAGE DOSSIER")
-                        .font(.caption.bold())
-                        .foregroundColor(.secondary)
+                    Text("CONFIDENTIAL MARRIAGE HOROSCOPE & BIO-DATA")
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundColor(.gray)
                     Spacer()
-                    Text("VERIFIED HOROSCOPE")
-                        .font(.caption.bold())
-                        .foregroundColor(.green)
+                    Text("KNOT-7F2A9B1C • VERIFIED")
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundColor(Color(red: 0.04, green: 0.5, blue: 0.3))
                 }
                 
-                Text("Ananya Iyer & Rahul Sharma")
-                    .font(.title3.bold())
+                Text("\(candidate.name) & Candidate")
+                    .font(.system(size: 20, weight: .bold, design: .serif))
+                    .foregroundColor(.black)
                 
-                Grid(alignment: .leading, horizontalSpacing: 24, verticalSpacing: 10) {
+                Grid(alignment: .leading, horizontalSpacing: 20, verticalSpacing: 10) {
                     GridRow {
-                        Text("Guna Milan Score:").font(.caption.bold())
-                        Text("31 / 36 (Auspicious Alignment)").foregroundColor(.green).font(.caption)
+                        Text("Guna Milan Score:").font(.caption.bold()).foregroundColor(.black)
+                        Text("32 / 36 Auspicious Alignment").font(.caption).foregroundColor(Color(red: 0.04, green: 0.5, blue: 0.3))
                     }
                     GridRow {
-                        Text("Manglik Status:").font(.caption.bold())
-                        Text("Compatible (No Dosha friction)").font(.caption)
+                        Text("Education & Career:").font(.caption.bold()).foregroundColor(.black)
+                        Text("\(candidate.education) • \(candidate.role)").font(.caption).foregroundColor(.black)
                     }
                     GridRow {
-                        Text("Education & Role:").font(.caption.bold())
-                        Text("MBA / Senior Consultant @ McKinsey").font(.caption)
+                        Text("Family Living:").font(.caption.bold()).foregroundColor(.black)
+                        Text(candidate.familyLabel).font(.caption).foregroundColor(.black)
                     }
                     GridRow {
-                        Text("Cultural Alignment:").font(.caption.bold())
-                        Text("Vedic Sidereal Lahiri Ephemeris Verified").font(.caption)
+                        Text("Ephemeris Source:").font(.caption.bold()).foregroundColor(.black)
+                        Text("Vedic Sidereal Lahiri (Swiss Ephemeris Precision)").font(.caption).foregroundColor(.gray)
                     }
                 }
                 .padding(14)
-                .background(Color(NSColor.textBackgroundColor))
+                .background(Color.black.opacity(0.04))
                 .cornerRadius(8)
                 
-                Text("💡 Note: This document mentions zero dating apps or swipe terminology. It is formatted specifically as an authentic matrimonial horoscope and bio-data sheet for family review.")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                Text("Notice for Family: Formatted strictly as an authentic matrimonial horoscope. Contains zero dating app terminology, preserving family dignity.")
+                    .font(.system(size: 10))
+                    .foregroundColor(.gray)
+                    .italic()
             }
-            .padding(16)
-            .background(Color(NSColor.controlBackgroundColor))
-            .cornerRadius(10)
+            .padding(24)
+            .background(Color(red: 0.99, green: 0.99, blue: 0.97))
+            .cornerRadius(12)
             
             HStack {
-                Button("Print / Save as PDF") {
-                    showingDossierModal = false
+                Button("Print / Export 1-Page PDF") {
+                    showingVaultModal = false
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(.indigo)
+                .tint(KnotTheme.indigo)
             }
         }
         .padding(24)
-        .frame(width: 540, height: 420)
+        .frame(width: 580, height: 460)
+        .background(Color(red: 0.96, green: 0.96, blue: 0.94))
+    }
+    
+    private func nextCandidate() {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            currentIndex += 1
+            likedPrompt = nil
+        }
     }
 }

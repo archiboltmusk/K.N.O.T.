@@ -3,21 +3,21 @@ import SwiftUI
 public struct OnboardingView: View {
     @State private var currentStep = 1
     
-    // Step 1: Verification & Intent
-    @State private var fullName = ""
-    @State private var workRole = ""
-    @State private var company = ""
-    @State private var isLinkedInVerified = true
-    @State private var birthDate = Calendar.current.date(from: DateComponents(year: 1996, month: 7, day: 20)) ?? Date()
+    // Form States
+    @State private var fullName = "Rahul Sharma"
+    @State private var workRole = "Senior Product Manager"
+    @State private var company = "Microsoft"
+    @State private var city = "Bangalore (Indiranagar)"
     @State private var marriageTimeline = "Within 1–2 Years"
+    @State private var birthDate = Calendar.current.date(from: DateComponents(year: 1996, month: 7, day: 20)) ?? Date()
     
-    // Step 2: The 4 Value Pillars
+    // Values
     @State private var financialPhilosophy = "investor"
     @State private var careerPace = "high_drive"
     @State private var familyDynamics = "close_proximity"
-    @State private var communicationStyle = "collaborative"
+    @State private var conflictStyle = "collaborative"
     
-    // Step 3: Cultural Comfort
+    // Step 3
     @State private var knowsBirthTime = false
     @State private var birthTime = Date()
     @State private var birthCity = "Bangalore, India"
@@ -25,233 +25,254 @@ public struct OnboardingView: View {
     public init() {}
     
     public var body: some View {
-        VStack(spacing: 0) {
-            // Header Progress Bar
-            onboardingHeader
-            
-            Divider()
-            
-            // Step Content
-            ScrollView {
-                VStack(spacing: 24) {
+        HStack(spacing: 0) {
+            // Left Input Flow (Multi-Step Form)
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 28) {
+                    // Header Step Indicator
+                    stepIndicatorHeader
+                    
                     switch currentStep {
                     case 1:
-                        step1VerificationView
+                        step1IdentityView
                     case 2:
-                        step2ValuesView
+                        step2DilemmasView
                     case 3:
                         step3CulturalView
                     default:
                         step4SuccessView
                     }
+                    
+                    // Bottom Navigation
+                    stepNavigationFooter
                 }
-                .padding(32)
-                .frame(maxWidth: 680)
+                .padding(36)
+                .frame(maxWidth: 580)
             }
+            .frame(maxWidth: .infinity)
+            .background(KnotTheme.bgDeep)
             
             Divider()
+                .background(KnotTheme.border)
             
-            // Footer Navigation
-            onboardingFooter
+            // Right Side: Live Luxury Profile Card Preview
+            VStack(alignment: .leading, spacing: 18) {
+                HStack {
+                    Label("LIVE PROFILE PREVIEW", systemImage: "sparkles")
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundColor(KnotTheme.gold)
+                    Spacer()
+                    Text("Updates in real-time")
+                        .font(.system(size: 10))
+                        .foregroundColor(.secondary)
+                }
+                
+                livePreviewCard
+                
+                Spacer()
+            }
+            .padding(28)
+            .frame(width: 380)
+            .background(KnotTheme.bgSurface)
         }
-        .background(Color(NSColor.windowBackgroundColor))
     }
     
-    // MARK: - Header
-    private var onboardingHeader: some View {
-        HStack(spacing: 16) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text("K.N.O.T. Onboarding")
-                    .font(.headline)
-                Text("Step \(min(currentStep, 3)) of 3 • High-Intent Verification (< 90 seconds)")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-            
-            // Progress indicators
+    // MARK: - Step Indicator
+    private var stepIndicatorHeader: some View {
+        VStack(alignment: .leading, spacing: 12) {
             HStack(spacing: 8) {
                 ForEach(1...3, id: \.self) { idx in
-                    Circle()
-                        .fill(idx <= currentStep ? Color.indigo : Color.secondary.opacity(0.2))
-                        .frame(width: 10, height: 10)
+                    Capsule()
+                        .fill(idx <= currentStep ? KnotTheme.gold : Color.white.opacity(0.1))
+                        .frame(height: 4)
                 }
             }
+            
+            HStack {
+                Text("Step \(min(currentStep, 3)) of 3")
+                    .font(.system(size: 11, weight: .bold, design: .monospaced))
+                    .foregroundColor(KnotTheme.gold)
+                    .textCase(.uppercase)
+                Spacer()
+                Text("High-Intent Verification • < 90 Seconds")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 16)
-        .background(Color(NSColor.controlBackgroundColor))
     }
     
-    // MARK: - Step 1: Verification & Intent
-    private var step1VerificationView: some View {
-        VStack(alignment: .leading, spacing: 20) {
+    // MARK: - Step 1: Professional Identity
+    private var step1IdentityView: some View {
+        VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Professional Identity & Intent")
-                    .font(.title2.bold())
-                Text("K.N.O.T. filters out casual daters and bots by verifying professional intent upfront.")
+                    .font(.system(size: 26, weight: .bold, design: .serif))
+                    .foregroundColor(.white)
+                Text("K.N.O.T. filters out casual daters and bots by verifying intent and career background.")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
             
-            // LinkedIn Verified Pill
-            HStack(spacing: 12) {
-                Image(systemName: "checkmark.seal.fill")
-                    .foregroundColor(.blue)
-                    .font(.title3)
+            // LinkedIn Verified Banner
+            HStack(spacing: 14) {
+                ZStack {
+                    Circle().fill(Color.blue.opacity(0.15)).frame(width: 38, height: 38)
+                    Image(systemName: "checkmark.seal.fill").foregroundColor(.blue).font(.system(size: 18))
+                }
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Verified Professional Profile")
+                    Text("Auto-Verified Professional Profile")
                         .font(.subheadline.bold())
-                    Text("Auto-verified via LinkedIn OAuth (No spam, no fake accounts)")
-                        .font(.caption2)
+                        .foregroundColor(.white)
+                    Text("Connected via LinkedIn OAuth • Zero fake accounts")
+                        .font(.caption)
                         .foregroundColor(.secondary)
                 }
                 Spacer()
-                Toggle("", isOn: $isLinkedInVerified)
-                    .labelsHidden()
             }
             .padding(14)
-            .background(Color(NSColor.controlBackgroundColor))
-            .cornerRadius(10)
+            .background(KnotTheme.bgCard)
+            .cornerRadius(14)
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(KnotTheme.border, lineWidth: 1))
             
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Full Name")
-                    .font(.caption.bold())
-                TextField("e.g. Rahul Sharma", text: $fullName)
-                    .textFieldStyle(.roundedBorder)
-            }
-            
-            HStack(spacing: 16) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Role / Designation")
-                        .font(.caption.bold())
-                    TextField("e.g. Senior Product Manager", text: $workRole)
-                        .textFieldStyle(.roundedBorder)
-                }
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Company / Organization")
-                        .font(.caption.bold())
-                    TextField("e.g. Microsoft", text: $company)
-                        .textFieldStyle(.roundedBorder)
-                }
-            }
-            
-            HStack(spacing: 24) {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Date of Birth")
-                        .font(.caption.bold())
-                    DatePicker("", selection: $birthDate, displayedComponents: [.date])
-                        .datePickerStyle(.compact)
-                        .labelsHidden()
+            // Inputs
+            VStack(alignment: .leading, spacing: 16) {
+                luxuryInputField(label: "FULL LEGAL NAME", text: $fullName, placeholder: "e.g. Rahul Sharma")
+                
+                HStack(spacing: 16) {
+                    luxuryInputField(label: "ROLE / DESIGNATION", text: $workRole, placeholder: "e.g. Product Manager")
+                    luxuryInputField(label: "COMPANY / ORG", text: $company, placeholder: "e.g. Microsoft")
                 }
                 
+                luxuryInputField(label: "PRIMARY LOCATION", text: $city, placeholder: "e.g. Bangalore / Mumbai")
+                
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("Marriage Timeline Intent")
-                        .font(.caption.bold())
-                    Picker("", selection: $marriageTimeline) {
-                        Text("Within 6–12 Months").tag("Within 6–12 Months")
-                        Text("Within 1–2 Years").tag("Within 1–2 Years")
-                        Text("Exploring Seriously (2+ Years)").tag("Exploring Seriously (2+ Years)")
+                    Text("MARRIAGE TIMELINE INTENT")
+                        .font(.system(size: 10, weight: .bold, design: .monospaced))
+                        .foregroundColor(KnotTheme.gold)
+                    
+                    HStack(spacing: 10) {
+                        timelinePill(title: "Within 6–12 Months")
+                        timelinePill(title: "Within 1–2 Years")
+                        timelinePill(title: "Exploring Seriously (2+ Yrs)")
                     }
-                    .pickerStyle(.menu)
-                    .labelsHidden()
                 }
             }
         }
     }
     
-    // MARK: - Step 2: Value Pillars
-    private var step2ValuesView: some View {
+    private func timelinePill(title: String) -> some View {
+        Button(action: { marriageTimeline = title }) {
+            Text(title)
+                .font(.caption.bold())
+                .foregroundColor(marriageTimeline == title ? .black : .white)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .background(marriageTimeline == title ? KnotTheme.goldGradient : LinearGradient(colors: [KnotTheme.bgCard], startPoint: .top, endPoint: .bottom))
+                .cornerRadius(10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(marriageTimeline == title ? Color.clear : KnotTheme.border, lineWidth: 1)
+                )
+        }
+        .buttonStyle(.plain)
+    }
+    
+    private func luxuryInputField(label: String, text: Binding<String>, placeholder: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(label)
+                .font(.system(size: 10, weight: .bold, design: .monospaced))
+                .foregroundColor(KnotTheme.gold)
+            TextField(placeholder, text: text)
+                .textFieldStyle(.plain)
+                .font(.system(size: 14, weight: .medium))
+                .padding(12)
+                .background(KnotTheme.bgCard)
+                .cornerRadius(10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(KnotTheme.border, lineWidth: 1)
+                )
+        }
+    }
+    
+    // MARK: - Step 2: Dilemmas
+    private var step2DilemmasView: some View {
         VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("The 4 Core Reality Pillars")
-                    .font(.title2.bold())
-                Text("These fundamental values determine long-term marital harmony far more than superficial hobbies.")
+                    .font(.system(size: 26, weight: .bold, design: .serif))
+                    .foregroundColor(.white)
+                Text("Situational choices that predict marital durability far more than superficial hobbies.")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
             
-            // Financial Pillar
-            valueCard(
+            dilemmaSelector(
                 title: "1. Financial Philosophy",
                 icon: "chart.line.uptrend.xyaxis",
                 selection: $financialPhilosophy,
                 options: [
-                    ("investor", "Investor / Wealth Growth", "Focuses on compounding assets, equities, and calculated risk."),
-                    ("balanced", "Balanced & Prudent", "Maintains healthy lifestyle while ensuring systematic savings."),
-                    ("saver", "Disciplined Saver", "Prioritizes high emergency cushion and low-debt security."),
-                    ("experiential", "Experiential Living", "Values travel and personal experiences over strict capital accumulation.")
+                    ("investor", "Disciplined Investor", "Focuses on compounding equities, index funds, and buying financial autonomy."),
+                    ("balanced", "Balanced & Prudent", "Enjoys lifestyle spending while maintaining systematic emergency cushions."),
+                    ("saver", "Conservative Saver", "Prioritizes debt elimination and low-risk capital preservation.")
                 ]
             )
             
-            // Career Pace
-            valueCard(
+            dilemmaSelector(
                 title: "2. Career Rhythm & Pacing",
                 icon: "briefcase.fill",
                 selection: $careerPace,
                 options: [
-                    ("high_drive", "High-Drive / Executive", "Demanding hours with ambitious growth trajectory."),
-                    ("balanced", "Steady & Balanced", "Clear boundaries protecting evenings and weekends."),
-                    ("entrepreneurial", "Entrepreneurial / Fluid", "Dynamic, unpredictable rhythm driven by startups/ventures.")
+                    ("high_drive", "High-Drive Executive", "Demanding crunch rhythms with high trajectory aspirations."),
+                    ("balanced", "Steady & Balanced", "Strict boundaries protecting evenings and weekends."),
+                    ("entrepreneurial", "Entrepreneurial Fluid", "Dynamic startup rhythms that thrive outside strict 9-to-5s.")
                 ]
             )
             
-            // Family Dynamics
-            valueCard(
-                title: "3. Family & Living Arrangements",
+            dilemmaSelector(
+                title: "3. Family Living Arrangements",
                 icon: "house.fill",
                 selection: $familyDynamics,
                 options: [
-                    ("close_proximity", "Close Proximity to Parents", "Living in the same city/neighborhood while maintaining a private home."),
-                    ("nuclear", "Independent Nuclear Home", "Separate living space focused on the couple's core unit."),
+                    ("close_proximity", "Close Proximity (Private Home)", "Same neighborhood as parents while maintaining couple privacy."),
+                    ("nuclear", "Independent Nuclear Home", "Separate living space focused on the core partnership."),
                     ("joint", "Joint Family Living", "Sharing a household with extended family.")
-                ]
-            )
-            
-            // Communication
-            valueCard(
-                title: "4. Conflict Resolution Style",
-                icon: "bubble.left.and.bubble.right.fill",
-                selection: $communicationStyle,
-                options: [
-                    ("collaborative", "Collaborative Discussion", "Prefers talking through tensions calmly to find win-win outcomes."),
-                    ("direct", "Direct & Immediate", "Tackles issues the moment they arise to clear the air."),
-                    ("reflective", "Reflective & Measured", "Needs time to process emotions before discussing solutions.")
                 ]
             )
         }
     }
     
-    private func valueCard(title: String, icon: String, selection: Binding<String>, options: [(String, String, String)]) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
+    private func dilemmaSelector(title: String, icon: String, selection: Binding<String>, options: [(String, String, String)]) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
             Label(title, systemImage: icon)
-                .font(.headline)
-                .foregroundColor(.indigo)
+                .font(.system(size: 11, weight: .bold, design: .monospaced))
+                .foregroundColor(KnotTheme.gold)
+                .textCase(.uppercase)
             
             ForEach(options, id: \.0) { key, label, desc in
                 Button(action: { selection.wrappedValue = key }) {
                     HStack(alignment: .top, spacing: 12) {
                         Image(systemName: selection.wrappedValue == key ? "largecircle.fill.circle" : "circle")
-                            .foregroundColor(selection.wrappedValue == key ? .indigo : .secondary)
+                            .foregroundColor(selection.wrappedValue == key ? KnotTheme.gold : .secondary)
                             .padding(.top, 2)
+                        
                         VStack(alignment: .leading, spacing: 2) {
                             Text(label)
                                 .font(.subheadline.bold())
-                                .foregroundColor(.primary)
+                                .foregroundColor(selection.wrappedValue == key ? .white : .primary)
                             Text(desc)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                         Spacer()
                     }
-                    .padding(12)
-                    .background(selection.wrappedValue == key ? Color.indigo.opacity(0.08) : Color(NSColor.controlBackgroundColor))
+                    .padding(14)
+                    .background(selection.wrappedValue == key ? KnotTheme.bgCardHover : KnotTheme.bgCard)
+                    .cornerRadius(12)
                     .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(selection.wrappedValue == key ? Color.indigo.opacity(0.4) : Color.clear, lineWidth: 1.5)
+                        RoundedRectangle(cornerRadius: 12)
+                            .stroke(selection.wrappedValue == key ? KnotTheme.borderGold : KnotTheme.border, lineWidth: 1)
                     )
-                    .cornerRadius(8)
                 }
                 .buttonStyle(.plain)
             }
@@ -260,112 +281,165 @@ public struct OnboardingView: View {
     
     // MARK: - Step 3: Cultural Comfort
     private var step3CulturalView: some View {
-        VStack(alignment: .leading, spacing: 20) {
+        VStack(alignment: .leading, spacing: 24) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Cultural Roots & Astrological Alignment")
-                    .font(.title2.bold())
-                Text("We calculate your basic celestial markers from your birth date. Exact time is 100% optional until you mutually match.")
+                Text("Cultural Roots & Ephemeris")
+                    .font(.system(size: 26, weight: .bold, design: .serif))
+                    .foregroundColor(.white)
+                Text("Basic astronomical signs are derived automatically. Exact time is optional until mutual match.")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
             }
             
             // Progressive Disclosure Card
-            HStack(spacing: 14) {
-                Image(systemName: "sparkles")
-                    .font(.title2)
-                    .foregroundColor(.purple)
-                VStack(alignment: .leading, spacing: 3) {
-                    Text("No Cold-Start Drop-off")
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(spacing: 12) {
+                    Image(systemName: "sparkles")
+                        .foregroundColor(KnotTheme.gold)
+                    Text("Progressive Disclosure: Zero Cold-Start Drop-off")
                         .font(.subheadline.bold())
-                    Text("You don't need your hospital birth certificate to get started. Basic astronomical positioning is derived from your birth date automatically.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.white)
                 }
-            }
-            .padding(14)
-            .background(Color.purple.opacity(0.08))
-            .cornerRadius(10)
-            
-            VStack(alignment: .leading, spacing: 12) {
-                Toggle("I know my exact birth time right now", isOn: $knowsBirthTime)
-                    .font(.subheadline.bold())
+                Text("You don't need your hospital birth certificate right now. Your Sun and general Moon signs are active immediately.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
                 
-                if knowsBirthTime {
-                    HStack(spacing: 16) {
-                        DatePicker("Birth Time (Exact)", selection: $birthTime, displayedComponents: [.hourAndMinute])
-                            .datePickerStyle(.compact)
-                        
-                        TextField("Birth City", text: $birthCity)
-                            .textFieldStyle(.roundedBorder)
-                    }
-                    .padding(.top, 4)
-                } else {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("⚡ You can unlock full Kundli / Nakshatra Pada synergy later with any candidate you mutually match with.")
-                            .font(.caption)
+                Divider().background(KnotTheme.border)
+                
+                // WhatsApp "Ask Mom" Card
+                HStack(spacing: 12) {
+                    Image(systemName: "message.fill")
+                        .foregroundColor(KnotTheme.emerald)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("WhatsApp 'Ask Mom' Card")
+                            .font(.caption.bold())
+                            .foregroundColor(.white)
+                        Text("One-tap polite message to ask your family for exact hospital birth time.")
+                            .font(.caption2)
                             .foregroundColor(.secondary)
-                        
-                        // WhatsApp "Ask Mom" Card
-                        HStack(spacing: 12) {
-                            Image(systemName: "message.fill")
-                                .foregroundColor(.green)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("WhatsApp 'Ask Mom' Card")
-                                    .font(.caption.bold())
-                                Text("One-tap polite message to ask your family for your exact hospital birth time.")
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
-                            }
-                            Spacer()
-                            Button("Copy Message") {
-                                let pb = NSPasteboard.general
-                                pb.clearContents()
-                                pb.setString("Hey Maa/Papa, I'm filling out a verified marriage profile and need my exact birth details. Could you check my birth certificate or Kundli chart and share: 1. Exact time of birth, 2. Hospital / City of birth. Thank you!", forType: .string)
-                            }
-                            .buttonStyle(.bordered)
-                            .controlSize(.small)
-                        }
-                        .padding(10)
-                        .background(Color.green.opacity(0.08))
-                        .cornerRadius(8)
                     }
-                    .padding(.top, 2)
+                    Spacer()
+                    Button("Copy Message") {
+                        let pb = NSPasteboard.general
+                        pb.clearContents()
+                        pb.setString("Hey Maa/Papa, I'm filling out a verified marriage profile and need my exact birth details. Could you check my birth certificate or Kundli chart and share: 1. Exact time of birth, 2. Hospital / City of birth. Thank you!", forType: .string)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(KnotTheme.emerald)
+                    .controlSize(.small)
                 }
+                .padding(12)
+                .background(KnotTheme.emerald.opacity(0.08))
+                .cornerRadius(10)
             }
-            .padding(16)
-            .background(Color(NSColor.controlBackgroundColor))
-            .cornerRadius(10)
+            .padding(18)
+            .background(KnotTheme.bgCard)
+            .cornerRadius(16)
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(KnotTheme.border, lineWidth: 1))
         }
     }
     
     // MARK: - Step 4: Success
     private var step4SuccessView: some View {
         VStack(spacing: 20) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 64))
-                .foregroundColor(.green)
+            ZStack {
+                Circle().fill(KnotTheme.emerald.opacity(0.15)).frame(width: 80, height: 80)
+                Image(systemName: "checkmark.seal.fill").foregroundColor(KnotTheme.emerald).font(.system(size: 40))
+            }
             
-            Text("Profile Verified & Ready!")
-                .font(.title.bold())
+            Text("Verification Complete!")
+                .font(.system(size: 28, weight: .bold, design: .serif))
+                .foregroundColor(.white)
             
-            Text("Your high-intent profile has been established with your verified credentials, 4 core value pillars, and celestial baseline.")
+            Text("Your verified profile is established. Your first 3 curated introductions will arrive at 8:00 PM Shubh Muhurat.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-                .frame(maxWidth: 480)
+                .frame(maxWidth: 420)
             
-            Button("View My Daily Curated Drops") {
+            Button("Explore Daily Introductions") {
                 currentStep = 1
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.indigo)
-            .padding(.top, 12)
+            .foregroundColor(.black)
+            .padding(.horizontal, 28)
+            .padding(.vertical, 14)
+            .background(KnotTheme.goldGradient)
+            .clipShape(Capsule())
+            .shadow(color: KnotTheme.gold.opacity(0.3), radius: 8, y: 4)
+            .buttonStyle(.plain)
+            .padding(.top, 16)
         }
-        .padding(.vertical, 40)
+        .padding(.vertical, 60)
     }
     
-    // MARK: - Footer
-    private var onboardingFooter: some View {
+    // MARK: - Live Preview Card (Right Side)
+    private var livePreviewCard: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            // Mini Photo Card
+            ZStack(alignment: .bottomLeading) {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(
+                        LinearGradient(
+                            colors: [Color(red: 0.35, green: 0.45, blue: 0.95), Color(red: 0.75, green: 0.35, blue: 0.85)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(height: 240)
+                
+                LinearGradient(colors: [.clear, .black.opacity(0.8)], startPoint: .center, endPoint: .bottom)
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 6) {
+                        Text(fullName.isEmpty ? "Your Name" : fullName)
+                            .font(.system(size: 20, weight: .bold, design: .serif))
+                            .foregroundColor(.white)
+                        Text("28")
+                            .font(.system(size: 16, weight: .light))
+                            .foregroundColor(.white.opacity(0.8))
+                        Image(systemName: "checkmark.seal.fill")
+                            .foregroundColor(.blue)
+                            .font(.caption)
+                    }
+                    Text("\(workRole.isEmpty ? "Role" : workRole) • \(company.isEmpty ? "Company" : company)")
+                        .font(.caption)
+                        .foregroundColor(.white.opacity(0.85))
+                }
+                .padding(14)
+            }
+            
+            // Value Pills
+            VStack(alignment: .leading, spacing: 6) {
+                Text("YOUR VALUE PROFILE")
+                    .font(.system(size: 9, weight: .bold, design: .monospaced))
+                    .foregroundColor(KnotTheme.gold)
+                
+                HStack(spacing: 6) {
+                    Text(financialPhilosophy.capitalized)
+                        .font(.caption2.bold())
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(KnotTheme.bgCard)
+                        .cornerRadius(6)
+                    
+                    Text(marriageTimeline)
+                        .font(.caption2.bold())
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(KnotTheme.bgCard)
+                        .cornerRadius(6)
+                }
+            }
+        }
+        .padding(14)
+        .background(KnotTheme.bgDeep)
+        .cornerRadius(18)
+        .overlay(RoundedRectangle(cornerRadius: 18).stroke(KnotTheme.border, lineWidth: 1))
+    }
+    
+    // MARK: - Footer Navigation
+    private var stepNavigationFooter: some View {
         HStack {
             if currentStep > 1 && currentStep <= 3 {
                 Button("Back") {
@@ -381,18 +455,24 @@ public struct OnboardingView: View {
                 Button("Continue") {
                     withAnimation { currentStep += 1 }
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.indigo)
+                .foregroundColor(.black)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 10)
+                .background(KnotTheme.goldGradient)
+                .clipShape(Capsule())
+                .buttonStyle(.plain)
             } else if currentStep == 3 {
                 Button("Complete Verification") {
                     withAnimation { currentStep = 4 }
                 }
-                .buttonStyle(.borderedProminent)
-                .tint(.green)
+                .foregroundColor(.black)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 10)
+                .background(KnotTheme.goldGradient)
+                .clipShape(Capsule())
+                .buttonStyle(.plain)
             }
         }
-        .padding(.horizontal, 24)
-        .padding(.vertical, 14)
-        .background(Color(NSColor.controlBackgroundColor))
+        .padding(.top, 12)
     }
 }

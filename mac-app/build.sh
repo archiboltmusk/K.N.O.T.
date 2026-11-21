@@ -23,7 +23,7 @@ cat <<EOF > "$CONTENTS/Info.plist"
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.1.0</string>
+    <string>2.0.0</string>
     <key>LSMinimumSystemVersion</key>
     <string>13.0</string>
     <key>NSHighResolutionCapable</key>
@@ -34,6 +34,7 @@ EOF
 
 echo "Compiling native Swift sources for macOS..."
 swiftc -parse-as-library -target arm64-apple-macosx13.0 \
+  "$DIR/Sources/Theme.swift" \
   "$DIR/Sources/Models.swift" \
   "$DIR/Sources/Engine.swift" \
   "$DIR/Sources/OnboardingView.swift" \
