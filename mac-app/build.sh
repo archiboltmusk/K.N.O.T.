@@ -37,6 +37,8 @@ swiftc -parse-as-library -target arm64-apple-macosx13.0 \
   "$DIR/Sources/Theme.swift" \
   "$DIR/Sources/Models.swift" \
   "$DIR/Sources/Engine.swift" \
+  "$DIR/Sources/PortraitCanvas.swift" \
+  "$DIR/Sources/ConstellationView.swift" \
   "$DIR/Sources/OnboardingView.swift" \
   "$DIR/Sources/DailyDropsView.swift" \
   "$DIR/Sources/PushCardView.swift" \

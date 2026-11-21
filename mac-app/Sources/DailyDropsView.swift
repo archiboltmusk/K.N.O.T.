@@ -35,6 +35,15 @@ public struct DailyDropsView: View {
                             // 3. Dasha Horizon Timing Curve (Inspired by The Pattern)
                             dashaTimingCurveCard(candidate: candidate)
                             
+                            // 3b. Interactive Celestial Synastry Constellation Wheel
+                            ConstellationView(
+                                person1Name: "You",
+                                nakshatra1: "Anuradha",
+                                person2Name: candidate.name,
+                                nakshatra2: candidate.nakshatra,
+                                gunaScore: 32
+                            )
+                            
                             // 4. Cosmic & Psychological Translation Card
                             cosmicSynergyCard(candidate: candidate)
                             
@@ -137,28 +146,16 @@ public struct DailyDropsView: View {
     // MARK: - Hero Photo Card
     private func heroPhotoCard(candidate: CandidateCardData) -> some View {
         ZStack(alignment: .bottomLeading) {
-            // Gradient Mesh Background simulating high-end photography
-            RoundedRectangle(cornerRadius: 24)
-                .fill(
-                    LinearGradient(
-                        colors: candidate.avatarGrad,
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    )
-                )
-                .frame(height: 480)
-                .overlay(
-                    // Luxury Monogram watermark
-                    Text(String(candidate.name.prefix(1)))
-                        .font(.system(size: 180, weight: .ultraLight, design: .serif))
-                        .foregroundColor(.white.opacity(0.15))
-                        .blur(radius: blurPhotos ? 24 : 0)
-                )
-                .blur(radius: blurPhotos ? 18 : 0)
+            // High-End Chiaroscuro Portrait Canvas with Golden Particles & Monogram
+            PortraitCanvas(
+                name: candidate.name,
+                gradientColors: candidate.avatarGrad,
+                isBlurred: blurPhotos
+            )
             
             // Scrim Overlay
             LinearGradient(
-                colors: [.clear, .black.opacity(0.4), .black.opacity(0.92)],
+                colors: [.clear, .black.opacity(0.35), .black.opacity(0.92)],
                 startPoint: .center,
                 endPoint: .bottom
             )
