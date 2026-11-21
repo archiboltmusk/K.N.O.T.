@@ -34,6 +34,9 @@ from app.engine.observer import generate_elder_observer_pass
 from app.engine.kyc import verify_digilocker_identity, sign_single_status_affidavit
 from app.engine.zkp import generate_zk_income_proof, generate_zk_compatibility_proof
 from app.engine.registry import calculate_milestone_velocity, generate_default_registry
+from app.engine.intent_guard import analyze_intent_density, evaluate_7day_milestone
+from app.engine.shastra import generate_pandit_defense_brief
+from app.engine.watermark import generate_forensic_view_token, verify_forensic_leak_source
 
 
 class TestKnotProductionEngine(unittest.TestCase):
@@ -180,6 +183,48 @@ class TestKnotProductionEngine(unittest.TestCase):
         self.assertEqual(velocity["remaining_amount_inr"], 2000000.0)
         self.assertEqual(velocity["months_to_milestone"], 20.0)
         self.assertEqual(velocity["monthly_contribution_per_partner"], 50000.0)
+
+    def test_intent_density_guard(self):
+        # 1. Evasive single-character message fails intent threshold
+        evasion_dot = analyze_intent_density(".")
+        self.assertFalse(evasion_dot["is_valid_intent"])
+        self.assertIn("Low-effort evasion", evasion_dot["failure_reason"])
+
+        evasion_hey = analyze_intent_density("hey")
+        self.assertFalse(evasion_hey["is_valid_intent"])
+
+        # 2. Genuine intentional message succeeds
+        meaningful_msg = "Loved your perspective on Kyoto sabbaticals. Would you like to meet at Blue Tokai this weekend?"
+        valid = analyze_intent_density(meaningful_msg)
+        self.assertTrue(valid["is_valid_intent"])
+        self.assertGreaterEqual(valid["intent_score"], 80.0)
+
+        # 3. 7-day milestone triggers Meet-or-Release if no date set
+        stalled = evaluate_7day_milestone(days_since_match=8, dates_scheduled=0)
+        self.assertEqual(stalled["status"], "MEET_OR_RELEASE_TRIGGERED")
+        self.assertTrue(stalled["requires_action"])
+
+    def test_pandit_defense_brief(self):
+        brief = generate_pandit_defense_brief(
+            cancellation_keys=["NADI_SAME_RASHI_DIFFERENT_NAKSHATRA", "BHAKOOT_FRIENDLY_LORDS"],
+            partner1_name="Rahul",
+            partner2_name="Pooja"
+        )
+        self.assertEqual(brief["couple"], "Rahul & Pooja")
+        self.assertIn("Muhurta Chintamani", brief["citations"][0]["source"])
+        self.assertTrue(len(brief["citations"]) >= 2)
+        self.assertTrue(brief["certification_code"].startswith("SHASTRA-CERT-"))
+
+    def test_forensic_watermark(self):
+        token = generate_forensic_view_token("viewer_user_888", "profile_owner_999")
+        self.assertTrue(token["micro_tag"].startswith("KNOT-"))
+        self.assertIn("Legal NDA Active", token["overlay_text"])
+
+        # Leak auditing verification
+        sessions = [token]
+        audit = verify_forensic_leak_source(token["micro_tag"], sessions)
+        self.assertTrue(audit["match_found"])
+        self.assertEqual(audit["leaking_user_id"], "viewer_user_888")
 
 
 if __name__ == "__main__":

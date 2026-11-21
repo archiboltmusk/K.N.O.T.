@@ -191,6 +191,18 @@ public struct DailyDropsView: View {
                     .background(.ultraThinMaterial)
                     .clipShape(Capsule())
                     
+                    HStack(spacing: 4) {
+                        Image(systemName: "lock.shield.fill")
+                            .foregroundColor(KnotTheme.purple)
+                        Text("KNOT-A94F81C")
+                            .font(.system(size: 9, weight: .bold, design: .monospaced))
+                            .foregroundColor(.white.opacity(0.85))
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(KnotTheme.purple.opacity(0.2))
+                    .clipShape(Capsule())
+                    
                     Spacer()
                     
                     // Score Disc
@@ -808,6 +820,27 @@ public struct DailyDropsView: View {
                 }
                 .padding(14)
                 .background(Color.black.opacity(0.04))
+                .cornerRadius(8)
+                
+                // Classical Shastra Cancellation Citation Box
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Image(systemName: "scroll.fill")
+                            .foregroundColor(Color(red: 0.7, green: 0.5, blue: 0.1))
+                        Text("Shastric Pandit Defense Brief (Certified Canonical Citations)")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundColor(.black)
+                    }
+                    Text("एकराशौ पृथग्ऋक्षे स्यातां वा तद्विपर्यये। नाडीदोषो न मन्तव्यो वरकन्यकयोः खलु॥")
+                        .font(.system(size: 11, design: .serif))
+                        .foregroundColor(.black)
+                        .italic()
+                    Text("— Muhurta Chintamani, Vivaha Prakarana, Shloka 38: 'Same Rashi, Different Nakshatras categorically NULLIFIES Nadi Dosha.' Certified proof for family astrologer.")
+                        .font(.system(size: 10))
+                        .foregroundColor(Color(red: 0.3, green: 0.3, blue: 0.3))
+                }
+                .padding(10)
+                .background(Color(red: 0.95, green: 0.93, blue: 0.85))
                 .cornerRadius(8)
                 
                 Text("Notice for Family: Formatted strictly as an authentic matrimonial horoscope. Contains zero dating app terminology, preserving family dignity.")

@@ -328,6 +328,27 @@ public struct ChatView: View {
             .padding(.vertical, 8)
             .background(Color.black.opacity(0.4))
             
+            // 7-Day Meet-or-Release Banner (Anti-Pen-Pal Loophole Fix)
+            HStack(spacing: 8) {
+                Image(systemName: "calendar.badge.clock")
+                    .foregroundColor(.orange)
+                Text("Meet-or-Release Protocol: Day 6 of 7. Transition from endless texting to an in-person coffee via the AI Date Concierge, or release slot.")
+                    .font(.caption2)
+                    .foregroundColor(.orange)
+                Spacer()
+                Button("Book Venue") { showingDateModal = true }
+                    .buttonStyle(.plain)
+                    .font(.caption2.bold())
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 3)
+                    .background(Color.orange.opacity(0.2))
+                    .foregroundColor(.orange)
+                    .cornerRadius(6)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 6)
+            .background(Color.orange.opacity(0.08))
+            
             // Messages Scroll
             ScrollView {
                 VStack(spacing: 14) {
@@ -362,28 +383,45 @@ public struct ChatView: View {
             .background(KnotTheme.bgSurface)
             
             // Input Bar
-            HStack(spacing: 12) {
-                TextField("Send an intentional message...", text: $newMessageText)
-                    .textFieldStyle(.plain)
-                    .padding(10)
-                    .background(KnotTheme.bgCard)
-                    .cornerRadius(8)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(KnotTheme.border, lineWidth: 1)
-                    )
-                
-                Button(action: sendMessage) {
-                    Image(systemName: "paperplane.fill")
-                        .foregroundColor(.black)
-                        .padding(10)
-                        .background(KnotTheme.gold)
-                        .cornerRadius(8)
+            VStack(spacing: 6) {
+                if !newMessageText.isEmpty {
+                    HStack(spacing: 6) {
+                        Image(systemName: newMessageText.count < 12 ? "exclamationmark.triangle.fill" : "checkmark.circle.fill")
+                            .font(.system(size: 10))
+                            .foregroundColor(newMessageText.count < 12 ? .orange : KnotTheme.emerald)
+                        Text(newMessageText.count < 12 ? "⚠️ Intent Density: 25% (Low-Effort). Write a meaningful thought or question to reset the 48h grace timer." : "✓ Intent Density: 95% (High Intent). Will protect match slot and extend 48h grace timer.")
+                            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                            .foregroundColor(newMessageText.count < 12 ? .orange : KnotTheme.emerald)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .transition(.opacity)
                 }
-                .buttonStyle(.plain)
-                .disabled(newMessageText.trimmingCharacters(in: .whitespaces).isEmpty)
+                
+                HStack(spacing: 12) {
+                    TextField("Send an intentional message...", text: $newMessageText)
+                        .textFieldStyle(.plain)
+                        .padding(10)
+                        .background(KnotTheme.bgCard)
+                        .cornerRadius(8)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(KnotTheme.border, lineWidth: 1)
+                        )
+                    
+                    Button(action: sendMessage) {
+                        Image(systemName: "paperplane.fill")
+                            .foregroundColor(.black)
+                            .padding(10)
+                            .background(KnotTheme.gold)
+                            .cornerRadius(8)
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(newMessageText.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 12)
             }
-            .padding(16)
             .background(KnotTheme.bgSurface)
         }
     }
