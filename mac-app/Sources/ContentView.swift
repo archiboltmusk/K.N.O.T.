@@ -53,14 +53,20 @@ public struct ContentView: View {
             // App Branding
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
-                    Image(systemName: "ring.circle.fill")
-                        .font(.system(size: 24))
-                        .foregroundColor(.indigo)
+                    Circle()
+                        .stroke(Color(red: 0.89, green: 0.79, blue: 0.57), lineWidth: 1.5)
+                        .frame(width: 26, height: 26)
+                        .overlay(
+                            Text("K")
+                                .font(.system(size: 13, weight: .bold, design: .serif))
+                                .foregroundColor(Color(red: 0.89, green: 0.79, blue: 0.57))
+                        )
                     Text("K.N.O.T.")
-                        .font(.system(size: 22, weight: .bold, design: .rounded))
+                        .font(.system(size: 20, weight: .bold, design: .serif))
+                        .foregroundColor(Color(red: 0.89, green: 0.79, blue: 0.57))
                 }
-                Text("Knowledge • Navigation • Orbit • Trust")
-                    .font(.caption2)
+                Text("KNOWLEDGE • ORBIT • TRUST")
+                    .font(.system(size: 8, weight: .bold, design: .monospaced))
                     .foregroundColor(.secondary)
             }
             .padding(.top, 16)
@@ -184,21 +190,26 @@ public struct ContentView: View {
                     HStack(spacing: 32) {
                         ZStack {
                             Circle()
-                                .stroke(Color.secondary.opacity(0.15), lineWidth: 12)
-                                .frame(width: 120, height: 120)
+                                .stroke(Color.secondary.opacity(0.12), lineWidth: 10)
+                                .frame(width: 124, height: 124)
                             Circle()
                                 .trim(from: 0, to: CGFloat(res.knotIndex / 100.0))
                                 .stroke(
-                                    LinearGradient(colors: [.indigo, .purple], startPoint: .topLeading, endPoint: .bottomTrailing),
-                                    style: StrokeStyle(lineWidth: 12, lineCap: .round)
+                                    LinearGradient(
+                                        colors: [Color(red: 0.99, green: 0.92, blue: 0.76), Color(red: 0.89, green: 0.79, blue: 0.57)],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    ),
+                                    style: StrokeStyle(lineWidth: 10, lineCap: .round)
                                 )
                                 .rotationEffect(.degrees(-90))
-                                .frame(width: 120, height: 120)
+                                .frame(width: 124, height: 124)
                             VStack(spacing: 2) {
                                 Text("\(Int(res.knotIndex))")
-                                    .font(.system(size: 36, weight: .bold, design: .rounded))
-                                Text("K.N.O.T.")
-                                    .font(.system(size: 9, weight: .bold))
+                                    .font(.system(size: 38, weight: .semibold, design: .serif))
+                                    .foregroundColor(Color(red: 0.89, green: 0.79, blue: 0.57))
+                                Text("KMVA INDEX")
+                                    .font(.system(size: 8, weight: .bold, design: .monospaced))
                                     .foregroundColor(.secondary)
                             }
                         }
