@@ -45,7 +45,7 @@ public struct ContentView: View {
             case "pushcards":
                 PushCardView()
             case "onboarding":
-                OnboardingView()
+                OnboardingView(onComplete: { selectedTab = "drops" })
             case "manifesto":
                 manifestoView
             default:

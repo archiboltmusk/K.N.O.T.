@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 public struct DailyDropsView: View {
     @State private var currentIndex: Int = 0
@@ -294,7 +295,10 @@ public struct DailyDropsView: View {
             
             // Audio Playback Bar & Waveform
             HStack(spacing: 14) {
-                Button(action: { isPlayingVoice.toggle() }) {
+                Button(action: {
+                    isPlayingVoice.toggle()
+                    NSSound(named: isPlayingVoice ? "Pop" : "Tink")?.play()
+                }) {
                     ZStack {
                         Circle().fill(KnotTheme.goldGradient).frame(width: 44, height: 44)
                         Image(systemName: isPlayingVoice ? "pause.fill" : "play.fill")
@@ -303,6 +307,8 @@ public struct DailyDropsView: View {
                     }
                 }
                 .buttonStyle(.plain)
+                .keyboardShortcut(.space, modifiers: [])
+                .help("Play/Pause Voice Prompt (Spacebar)")
                 
                 // Animated Waveform Simulation
                 HStack(spacing: 3) {
@@ -544,7 +550,10 @@ public struct DailyDropsView: View {
     private func actionDock(candidate: CandidateCardData) -> some View {
         HStack(spacing: 16) {
             // Pass Button
-            Button(action: nextCandidate) {
+            Button(action: {
+                NSSound(named: "Basso")?.play()
+                nextCandidate()
+            }) {
                 ZStack {
                     Circle()
                         .fill(KnotTheme.bgCard)
@@ -556,10 +565,14 @@ public struct DailyDropsView: View {
                 }
             }
             .buttonStyle(.plain)
-            .help("Pass introduction")
+            .keyboardShortcut(.leftArrow, modifiers: [])
+            .help("Pass introduction (← Left Arrow)")
             
             // Send Rose with Note (Hinge Standout Feature)
-            Button(action: { showingRoseModal = true }) {
+            Button(action: {
+                NSSound(named: "Purr")?.play()
+                showingRoseModal = true
+            }) {
                 ZStack {
                     Circle()
                         .fill(KnotTheme.bgCard)
@@ -571,10 +584,14 @@ public struct DailyDropsView: View {
                 }
             }
             .buttonStyle(.plain)
-            .help("Send a Rose with an Intention Note")
+            .keyboardShortcut("r", modifiers: [])
+            .help("Send Rose with Intention Note (R key)")
             
             // Family-Ready Vault Button
-            Button(action: { showingVaultModal = true }) {
+            Button(action: {
+                NSSound(named: "Ping")?.play()
+                showingVaultModal = true
+            }) {
                 HStack(spacing: 6) {
                     Image(systemName: "doc.badge.shield.checkmark.fill")
                         .foregroundColor(KnotTheme.gold)
@@ -591,10 +608,14 @@ public struct DailyDropsView: View {
                 .clipShape(Capsule())
             }
             .buttonStyle(.plain)
-            .help("1-Page Parent-Ready Kundli Dossier")
+            .keyboardShortcut("v", modifiers: [])
+            .help("1-Page Parent-Ready Kundli Dossier (V key)")
             
             // Send Intent Button (Primary CTA)
-            Button(action: nextCandidate) {
+            Button(action: {
+                NSSound(named: "Hero")?.play()
+                nextCandidate()
+            }) {
                 HStack(spacing: 8) {
                     Image(systemName: "ring.circle.fill")
                     Text("Send Intent")
@@ -607,6 +628,9 @@ public struct DailyDropsView: View {
                 .clipShape(Capsule())
                 .shadow(color: KnotTheme.gold.opacity(0.3), radius: 10, y: 4)
             }
+            .buttonStyle(.plain)
+            .keyboardShortcut(.rightArrow, modifiers: [])
+            .help("Send Intent (→ Right Arrow)")
             .buttonStyle(.plain)
         }
     }

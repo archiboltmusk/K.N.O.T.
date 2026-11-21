@@ -22,7 +22,11 @@ public struct OnboardingView: View {
     @State private var birthTime = Date()
     @State private var birthCity = "Bangalore, India"
     
-    public init() {}
+    public var onComplete: (() -> Void)? = nil
+    
+    public init(onComplete: (() -> Void)? = nil) {
+        self.onComplete = onComplete
+    }
     
     public var body: some View {
         HStack(spacing: 0) {
@@ -358,7 +362,11 @@ public struct OnboardingView: View {
                 .frame(maxWidth: 420)
             
             Button("Explore Daily Introductions") {
-                currentStep = 1
+                if let done = onComplete {
+                    done()
+                } else {
+                    currentStep = 1
+                }
             }
             .foregroundColor(.black)
             .padding(.horizontal, 28)
