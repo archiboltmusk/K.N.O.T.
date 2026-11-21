@@ -300,10 +300,36 @@ public struct OnboardingView: View {
                     }
                     .padding(.top, 4)
                 } else {
-                    Text("⚡ You can unlock full Kundli / Nakshatra Pada synergy later with any candidate you mutually match with.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.top, 2)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("⚡ You can unlock full Kundli / Nakshatra Pada synergy later with any candidate you mutually match with.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        
+                        // WhatsApp "Ask Mom" Card
+                        HStack(spacing: 12) {
+                            Image(systemName: "message.fill")
+                                .foregroundColor(.green)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("WhatsApp 'Ask Mom' Card")
+                                    .font(.caption.bold())
+                                Text("One-tap polite message to ask your family for your exact hospital birth time.")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            Button("Copy Message") {
+                                let pb = NSPasteboard.general
+                                pb.clearContents()
+                                pb.setString("Hey Maa/Papa, I'm filling out a verified marriage profile and need my exact birth details. Could you check my birth certificate or Kundli chart and share: 1. Exact time of birth, 2. Hospital / City of birth. Thank you!", forType: .string)
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        }
+                        .padding(10)
+                        .background(Color.green.opacity(0.08))
+                        .cornerRadius(8)
+                    }
+                    .padding(.top, 2)
                 }
             }
             .padding(16)
