@@ -9,7 +9,9 @@
 
 **K.N.O.T.** is a modern, high-intent relationship platform built specifically for working professionals (ages 25–35) seeking serious commitment and marriage. 
 
-By bridging **cultural heritage & celestial calculations** with **real-world psychological and lifestyle compatibility**, K.N.O.T. provides an authentic, pressure-free alternative to both casual dating apps and traditional transactional matrimony sites.
+Positioned as the **"Hinge for Marriage in India & the Global Diaspora,"** K.N.O.T. bridges **cultural heritage & celestial calculations** with **real-world psychological and lifestyle compatibility**. It provides an authentic, high-intent alternative to both casual swiping apps and outdated transactional matrimony portals.
+
+*For our complete market gap analysis and business model, see [STRATEGY.md](STRATEGY.md).*
 
 ---
 
