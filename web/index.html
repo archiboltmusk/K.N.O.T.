@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K.N.O.T. — Intentional Matrimony & Dual Compatibility for Professionals</title>
+  <meta name="description" content="Dating for marriage on your own terms. Combining Vedic synastry and real-world lifestyle values for urban professionals.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="glow-orb glow-1"></div>
+  <div class="glow-orb glow-2"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="#" class="brand-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 3a9 9 0 0 1 9 9"/>
+        </svg>
+        K.N.O.T.
+      </a>
+      <a href="#waitlist" class="nav-cta">Join Private Beta</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="badge-pill">
+      <span>🚀</span> Waitlist Live for Bengaluru & Mumbai / Delhi NCR
+    </div>
+    <h1>
+      Stop dating people whose Saturn is actively <span class="gradient-text">ruining your life.</span>
+    </h1>
+    <p class="lead">
+      Dating with the explicit intention of marriage. No infinite swiping, no awkward parent-run biodata circus, and zero fear-mongering. Just 3 high-intent introductions every evening.
+    </p>
+
+    <!-- Waitlist Card -->
+    <div id="waitlist">
+      <form id="waitlistForm" class="waitlist-card">
+        <input type="email" id="emailInput" placeholder="Enter your work or personal email..." required>
+        <select id="citySelect">
+          <option value="Bengaluru">Bengaluru</option>
+          <option value="Mumbai">Mumbai / Pune</option>
+          <option value="Delhi">Delhi NCR</option>
+          <option value="Hyderabad">Hyderabad</option>
+          <option value="Global">Global Diaspora</option>
+        </select>
+        <button type="submit">Claim Early Access</button>
+      </form>
+
+      <div id="waitlistSuccess" style="display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-green); border-radius: 12px; padding: 20px; max-width: 560px; margin: 0 auto;">
+        <h3 style="color: var(--accent-green); margin-bottom: 6px;">🎉 You're on the list!</h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+          You reserved spot <strong id="spotNumber" style="color: #fff;">#1,428</strong>. We are admitting verified professionals in weekly cohorts starting with Bengaluru and Mumbai.
+        </p>
+      </div>
+
+      <p class="waitlist-subtext">🔒 Strictly verified via LinkedIn or Corporate Email. Zero bots. Zero casual hookups.</p>
+    </div>
+  </header>
+
+  <!-- Interactive Compatibility Preview -->
+  <section class="demo-section">
+    <div class="demo-box">
+      <div class="demo-header">
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-indigo); text-transform: uppercase; letter-spacing: 1px;">Live Interactive Preview</span>
+        <h3 style="margin-top: 4px;">Experience the Dual-Layer Compatibility Model</h3>
+        <p>See how K.N.O.T. translates celestial alignment and financial values into modern psychology.</p>
+      </div>
+
+      <div class="demo-inputs">
+        <div class="demo-col">
+          <h4>Candidate 1 (You)</h4>
+          <div class="form-group">
+            <label>Moon / Zodiac Sign</label>
+            <select id="sign1">
+              <option value="Scorpio">Scorpio (Vrishchika)</option>
+              <option value="Taurus">Taurus (Vrishabha)</option>
+              <option value="Leo">Leo (Simha)</option>
+              <option value="Aquarius">Aquarius (Kumbha)</option>
+              <option value="Virgo">Virgo (Kanya)</option>
+              <option value="Pisces">Pisces (Meena)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Financial Philosophy</label>
+            <select id="fin1">
+              <option value="Disciplined Investor">Investor / Wealth Compounding</option>
+              <option value="Balanced Prudence">Balanced & Prudent</option>
+              <option value="Disciplined Saver">Disciplined Saver</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="demo-col">
+          <h4>Candidate 2 (Match)</h4>
+          <div class="form-group">
+            <label>Moon / Zodiac Sign</label>
+            <select id="sign2">
+              <option value="Aquarius">Aquarius (Kumbha)</option>
+              <option value="Taurus">Taurus (Vrishabha)</option>
+              <option value="Virgo">Virgo (Kanya)</option>
+              <option value="Cancer">Cancer (Karka)</option>
+              <option value="Aries">Aries (Mesha)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Financial Philosophy</label>
+            <select id="fin2">
+              <option value="Balanced Prudence">Balanced & Prudent</option>
+              <option value="Disciplined Investor">Investor / Wealth Compounding</option>
+              <option value="Experiential">Experiential Living</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-action">
+        <button id="calcBtn" class="btn-calculate">Evaluate Dual Compatibility</button>
+      </div>
+
+      <!-- Result Card -->
+      <div id="resultCard" class="demo-result-card">
+        <div class="demo-result-header">
+          <div>
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--accent-indigo); text-transform: uppercase;">Composite Synergy</span>
+            <h4 style="font-size: 1.15rem; color: #fff;">Exceptional Natural Alignment</h4>
+          </div>
+          <div id="resIndex" class="index-badge">91/100</div>
+        </div>
+
+        <div class="result-pills">
+          <div class="pill-item">
+            <strong id="resBanter">Banter Score: 94%</strong>
+            <p id="resBanterDesc">Effortless conversational chemistry and shared social humor.</p>
+          </div>
+          <div class="pill-item">
+            <strong id="resPacing">Passion & Pacing: 88%</strong>
+            <p id="resPacingDesc">Balanced momentum across both career milestones and home planning.</p>
+          </div>
+        </div>
+
+        <div class="icebreaker-box">
+          <strong>DYNAMIC COSMIC ICEBREAKER</strong>
+          <span id="resIcebreaker">"Your Mars squares their Venus—ask what hill they are willing to die on."</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 Pillars Showcase -->
+  <section class="pillars-section">
+    <div class="section-title">
+      <h2>The 6 Pillars That Kill App Fatigue</h2>
+      <p>Built specifically to solve the trust, liquidity, and parental gap in modern Indian matrimony.</p>
+    </div>
+
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <span class="pillar-icon">⏳</span>
+        <h3>3 Cosmic Drops at 8:00 PM</h3>
+        <p>No endless swipe decks. Every evening at 8:00 PM (Shubh Muhurat), receive 3 curated high-intent profiles based on Vedic synastry and verified values.</p>
+      </div>
+
+      <div class="pillar-card">
+        <span class="pillar-icon">🧠</span>
+        <h3>Modern Psychological Translation</h3>
+        <p>We translate Sanskrit jargon into relatable psychology. "Bhakoot Dosha" becomes <em>Passion & Pacing</em>; "Gana Maitri" becomes your <em>Banter Score (94%)</em>.</p>
+      </div>
+
+      <div class="pillar-card">
+        <span class="pillar-icon">📲</span>
+        <h3>WhatsApp "Ask Mom" Card</h3>
+        <p>Zero birth-time friction. Start instantly with your birth date. Need your exact hospital time later? One tap generates a polite WhatsApp message for your mom.</p>
+      </div>
+
+      <div class="pillar-card">
+        <span class="pillar-icon">🛡️</span>
+        <h3>The Family-Ready Vault</h3>
+        <p>Chatted for 7+ days? Download a formal, clean 1-page Kundli and bio-data sheet to share directly with conservative parents—with zero mention of a dating app.</p>
+      </div>
+
+      <div class="pillar-card">
+        <span class="pillar-icon">💎</span>
+        <h3>Ethical Micro-Monetization</h3>
+        <p>Matching and messaging are 100% free to protect liquidity. Pay ₹49–₹99 via UPI only when you want an instant synastry deep-dive before an IRL date.</p>
+      </div>
+
+      <div class="pillar-card">
+        <span class="pillar-icon">🔒</span>
+        <h3>Women-First Privacy Shield</h3>
+        <p>Never display exact birth data publicly. Includes a mandatory "Blur Photos Until Mutual Match" toggle to explore safely without fear of family screenshots.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Family Vault Callout Banner -->
+  <section class="vault-banner">
+    <div class="vault-box">
+      <div class="vault-text">
+        <h3>The Secret Weapon: The Family-Ready Dossier</h3>
+        <p>
+          In India, the hardest moment is telling your parents how you met. K.N.O.T. provides an authentic, traditional Kundli & bio-data sheet that honors family tradition while keeping your modern dating life private.
+        </p>
+      </div>
+      <div class="vault-badge">
+        <strong>100% Parent-Ready</strong>
+        <span>1-Page PDF Export</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>
+      © 2026 K.N.O.T. • Knowledge • Navigation • Orbit • Trust. 
+      Open Source Core on <a href="https://github.com/archiboltmusk/K.N.O.T." target="_blank">GitHub</a>.
+    </p>
+    <p style="margin-top: 8px; font-size: 0.8rem; color: #475569;">
+      100% transparent astronomical calculations. Never charging for curses, remedies, or fake predictions.
+    </p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
