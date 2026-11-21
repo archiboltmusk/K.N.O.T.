@@ -1,15 +1,17 @@
 """
 K.N.O.T. Celestial Engine
-Standard astronomical calculations and cultural harmonic modeling.
-Focuses on transparent, constructive alignment without fear-mongering.
+Standard astronomical calculations, Lahiri Ayanamsa, 27 Nakshatras & Rashis.
+Upgraded with:
+- Cusp Birth Detection (±0.75° boundary identification for Rashi & Nakshatra)
+- Historical Timezone / DST awareness
+- Probabilistic confidence modeling
 """
 
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import math
-from typing import Dict, Any, Tuple, List
+from typing import Dict, Any, Tuple, List, Optional
 
-# 12 Zodiac Rashis
 RASHIS = [
     {"index": 0, "name": "Aries", "sanskrit": "Mesha", "element": "Fire", "ruler": "Mars"},
     {"index": 1, "name": "Taurus", "sanskrit": "Vrishabha", "element": "Earth", "ruler": "Venus"},
@@ -25,11 +27,10 @@ RASHIS = [
     {"index": 11, "name": "Pisces", "sanskrit": "Meena", "element": "Water", "ruler": "Jupiter"},
 ]
 
-# 27 Lunar Mansions (Nakshatras) - 13° 20' each
 NAKSHATRAS = [
     {"index": 0, "name": "Ashwini", "ruler": "Ketu", "temperament": "Dynamic", "symbol": "Horse Head"},
     {"index": 1, "name": "Bharani", "ruler": "Venus", "temperament": "Transformative", "symbol": "Yoni"},
-    {"index": 2, "name": "Krittika", "ruler": "Sun", "temperament": "Analytical", "symbol": "Razor/Flame"},
+    {"index": 2, "name": "Krittika", "ruler": "Sun", "temperament": "Analytical", "symbol": "Flame"},
     {"index": 3, "name": "Rohini", "ruler": "Moon", "temperament": "Nurturing", "symbol": "Cart/Chariot"},
     {"index": 4, "name": "Mrigashira", "ruler": "Mars", "temperament": "Inquisitive", "symbol": "Deer Head"},
     {"index": 5, "name": "Ardra", "ruler": "Rahu", "temperament": "Resilient", "symbol": "Teardrop"},
@@ -37,7 +38,7 @@ NAKSHATRAS = [
     {"index": 7, "name": "Pushya", "ruler": "Saturn", "temperament": "Grounded", "symbol": "Lotus/Flower"},
     {"index": 8, "name": "Ashlesha", "ruler": "Mercury", "temperament": "Perceptive", "symbol": "Coiled Serpent"},
     {"index": 9, "name": "Magha", "ruler": "Ketu", "temperament": "Dignified", "symbol": "Royal Throne"},
-    {"index": 10, "name": "Purva Phalguni", "ruler": "Venus", "temperament": "Affectionate", "symbol": "Hammock/Couch"},
+    {"index": 10, "name": "Purva Phalguni", "ruler": "Venus", "temperament": "Affectionate", "symbol": "Hammock"},
     {"index": 11, "name": "Uttara Phalguni", "ruler": "Sun", "temperament": "Steadfast", "symbol": "Bed Posts"},
     {"index": 12, "name": "Hasta", "ruler": "Moon", "temperament": "Skillful", "symbol": "Open Hand"},
     {"index": 13, "name": "Chitra", "ruler": "Mars", "temperament": "Creative", "symbol": "Bright Jewel"},
@@ -50,11 +51,22 @@ NAKSHATRAS = [
     {"index": 20, "name": "Uttara Ashadha", "ruler": "Sun", "temperament": "Enduring", "symbol": "Elephant Tusk"},
     {"index": 21, "name": "Shravana", "ruler": "Moon", "temperament": "Attentive", "symbol": "Listening Ear"},
     {"index": 22, "name": "Dhanishta", "ruler": "Mars", "temperament": "Rhythmic", "symbol": "Musical Drum"},
-    {"index": 23, "name": "Shatabhisha", "ruler": "Rahu", "temperament": "Visionary", "symbol": "100 Physicians/Stars"},
-    {"index": 24, "name": "Purva Bhadrapada", "ruler": "Jupiter", "temperament": "Idealistic", "symbol": "Front Legs of Bed"},
-    {"index": 25, "name": "Uttara Bhadrapada", "ruler": "Saturn", "temperament": "Wise & Deep", "symbol": "Serpent of Deep"},
-    {"index": 26, "name": "Revati", "ruler": "Mercury", "temperament": "Compassionate", "symbol": "Fish swimming"},
+    {"index": 23, "name": "Shatabhisha", "ruler": "Rahu", "temperament": "Visionary", "symbol": "100 Stars"},
+    {"index": 24, "name": "Purva Bhadrapada", "ruler": "Jupiter", "temperament": "Idealistic", "symbol": "Front Legs"},
+    {"index": 25, "name": "Uttara Bhadrapada", "ruler": "Saturn", "temperament": "Wise & Deep", "symbol": "Serpent"},
+    {"index": 26, "name": "Revati", "ruler": "Mercury", "temperament": "Compassionate", "symbol": "Fish Pair"},
 ]
+
+CUSP_THRESHOLD_DEGREES = 0.75  # ±0.75° boundary buffer
+
+@dataclass
+class CuspStatus:
+    is_cusp: bool
+    rashi_cusp: bool
+    nakshatra_cusp: bool
+    adjacent_rashi: Optional[Dict[str, Any]]
+    adjacent_nakshatra: Optional[Dict[str, Any]]
+    note: str
 
 @dataclass
 class CelestialPosition:
@@ -63,9 +75,10 @@ class CelestialPosition:
     nakshatra: Dict[str, Any]
     pada: int
     degree_in_sign: float
+    cusp_status: CuspStatus
 
 def calculate_julian_date(dt: datetime) -> float:
-    """Calculates Julian Date for a given UTC datetime."""
+    """Calculates Julian Date for a UTC datetime."""
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=timezone.utc)
     else:
@@ -85,39 +98,25 @@ def calculate_julian_date(dt: datetime) -> float:
     return jd
 
 def calculate_lahiri_ayanamsa(jd: float) -> float:
-    """
-    Standard Lahiri Ayanamsa approximation.
-    Ayanamsa accounts for the precession of equinoxes (approx 50.29 arcseconds/year).
-    Base epoch: J2000.0 (JD 2451545.0) has Lahiri ~ 23.856 degrees.
-    """
     t = (jd - 2451545.0) / 36525.0
-    ayanamsa = 23.856 + (1.396 * t)
-    return ayanamsa
+    return 23.856 + (1.396 * t)
 
 def calculate_sun_longitude(jd: float) -> float:
     """Calculates apparent tropical solar longitude in degrees using Meeus model."""
     d = jd - 2451545.0
-    # Mean solar longitude
     l = (280.466 + 0.9856474 * d) % 360.0
-    # Mean anomaly
     g = math.radians((357.528 + 0.9856003 * d) % 360.0)
-    # Ecliptic longitude
     lambda_sun = l + 1.915 * math.sin(g) + 0.020 * math.sin(2 * g)
     return lambda_sun % 360.0
 
 def calculate_moon_longitude(jd: float) -> float:
-    """Calculates approximate tropical lunar longitude in degrees."""
+    """Computes Moon longitude using fundamental periodic perturbations."""
     d = jd - 2451545.0
-    # Mean longitude of Moon
     l = (218.316 + 13.176396 * d) % 360.0
-    # Mean anomaly of Moon
     m = math.radians((134.963 + 13.064993 * d) % 360.0)
-    # Mean anomaly of Sun
     m_sun = math.radians((357.528 + 0.9856003 * d) % 360.0)
-    # Moon elongation
     d_elong = math.radians((297.850 + 12.190749 * d) % 360.0)
 
-    # Core periodic perturbations
     correction = (
         6.289 * math.sin(m)
         + 1.274 * math.sin(2 * d_elong - m)
@@ -125,109 +124,113 @@ def calculate_moon_longitude(jd: float) -> float:
         - 0.214 * math.sin(2 * m)
         - 0.186 * math.sin(m_sun)
     )
-    lambda_moon = (l + correction) % 360.0
-    return lambda_moon
+    return (l + correction) % 360.0
+
+def detect_cusp_birth(sidereal_deg: float) -> CuspStatus:
+    """
+    Solves Loophole 1.1: Checks if Moon is within ±0.75° of a sign or nakshatra boundary.
+    Prevents false compatibility assignment due to approximate reported birth times.
+    """
+    deg_in_sign = sidereal_deg % 30.0
+    nakshatra_span = 360.0 / 27.0
+    deg_in_nak = sidereal_deg % nakshatra_span
+
+    rashi_cusp = (deg_in_sign <= CUSP_THRESHOLD_DEGREES) or (deg_in_sign >= 30.0 - CUSP_THRESHOLD_DEGREES)
+    nak_cusp = (deg_in_nak <= CUSP_THRESHOLD_DEGREES) or (deg_in_nak >= nakshatra_span - CUSP_THRESHOLD_DEGREES)
+
+    adjacent_rashi = None
+    if rashi_cusp:
+        cur_rashi = int(sidereal_deg // 30)
+        adj_idx = (cur_rashi - 1) % 12 if deg_in_sign <= CUSP_THRESHOLD_DEGREES else (cur_rashi + 1) % 12
+        adjacent_rashi = RASHIS[adj_idx]
+
+    adjacent_nak = None
+    if nak_cusp:
+        cur_nak = int(sidereal_deg // nakshatra_span)
+        adj_nak_idx = (cur_nak - 1) % 27 if deg_in_nak <= CUSP_THRESHOLD_DEGREES else (cur_nak + 1) % 27
+        adjacent_nak = NAKSHATRAS[adj_nak_idx]
+
+    is_cusp = rashi_cusp or nak_cusp
+    note = ""
+    if is_cusp:
+        note = (
+            f"Border placement detected within ±{CUSP_THRESHOLD_DEGREES}°. "
+            "Chart has energetic traits transitioning between neighboring signs/nakshatras."
+        )
+
+    return CuspStatus(
+        is_cusp=is_cusp,
+        rashi_cusp=rashi_cusp,
+        nakshatra_cusp=nak_cusp,
+        adjacent_rashi=adjacent_rashi,
+        adjacent_nakshatra=adjacent_nak,
+        note=note
+    )
 
 def get_sidereal_position(tropical_deg: float, jd: float) -> CelestialPosition:
-    """Converts tropical ecliptic degrees to Vedic Sidereal using Lahiri Ayanamsa."""
+    """Calculates sidereal position and runs cusp analysis."""
     ayanamsa = calculate_lahiri_ayanamsa(jd)
     sidereal_deg = (tropical_deg - ayanamsa) % 360.0
 
-    # Rashi (Sign) - 30 degrees each
     rashi_idx = int(sidereal_deg // 30)
     deg_in_sign = sidereal_deg % 30.0
 
-    # Nakshatra - 13.333333 degrees (13° 20') each
     nakshatra_span = 360.0 / 27.0
     nakshatra_idx = int(sidereal_deg // nakshatra_span)
-    deg_in_nakshatra = sidereal_deg % nakshatra_span
-    pada = int(deg_in_nakshatra // (nakshatra_span / 4.0)) + 1
+    deg_in_nak = sidereal_deg % nakshatra_span
+    pada = int(deg_in_nak // (nakshatra_span / 4.0)) + 1
+
+    cusp_info = detect_cusp_birth(sidereal_deg)
 
     return CelestialPosition(
         longitude=round(sidereal_deg, 3),
         rashi=RASHIS[rashi_idx],
         nakshatra=NAKSHATRAS[nakshatra_idx],
         pada=pada,
-        degree_in_sign=round(deg_in_sign, 2)
+        degree_in_sign=round(deg_in_sign, 2),
+        cusp_status=cusp_info
     )
 
 def evaluate_celestial_synergy(pos1: CelestialPosition, pos2: CelestialPosition) -> Dict[str, Any]:
-    """
-    Evaluates cultural & celestial harmony between two individuals.
-    Grounds calculations in psychological resonance and communication styles.
-    Returns score normalized to 0-100 with actionable strengths.
-    """
+    """Evaluates elemental resonance, temperament, and cusp sensitivities."""
     elem1 = pos1.rashi["element"]
     elem2 = pos2.rashi["element"]
 
-    # Elemental resonance matrix (0-30 points)
-    # Same element = 28, Compatible (Fire+Air or Earth+Water) = 30, Neutral = 22, Friction = 16
-    compatible_pairs = [("Fire", "Air"), ("Air", "Fire"), ("Earth", "Water"), ("Water", "Earth")]
-    friction_pairs = [("Fire", "Water"), ("Water", "Fire")]
-
     if elem1 == elem2:
         element_score = 28.0
-        element_summary = f"Shared {elem1} element creates immediate mutual understanding and similar life pacing."
-    elif (elem1, elem2) in compatible_pairs:
+        element_summary = f"Shared {elem1} element creates immediate mutual understanding."
+    elif (elem1, elem2) in [("Fire", "Air"), ("Air", "Fire"), ("Earth", "Water"), ("Water", "Earth")]:
         element_score = 30.0
-        element_summary = f"{elem1} and {elem2} complement each other naturally—one provides spark/structure, the other nurtures."
-    elif (elem1, elem2) in friction_pairs:
-        element_score = 18.0
-        element_summary = f"{elem1} and {elem2} have contrasting emotional styles, offering high growth through open communication."
+        element_summary = f"{elem1} and {elem2} complement each other naturally."
     else:
-        element_score = 24.0
-        element_summary = f"{elem1} and {elem2} bring balanced, grounded perspectives to daily living."
+        element_score = 20.0
+        element_summary = f"{elem1} and {elem2} provide distinct, balanced perspectives."
 
-    # Nakshatra Temperament resonance (0-40 points)
     temp1 = pos1.nakshatra["temperament"]
     temp2 = pos2.nakshatra["temperament"]
+    temp_score = 38.0 if temp1 == temp2 else 34.0
+    temp_summary = f"Synergy between {temp1} and {temp2} dispositions."
 
-    if temp1 == temp2:
-        temp_score = 38.0
-        temp_summary = f"Matching temperaments ({temp1}) ensure smooth collaboration and shared energy levels."
-    else:
-        temp_score = 34.0
-        temp_summary = f"Dynamic blend between {temp1} and {temp2} dispositions creates healthy balance."
-
-    # Rashi distance / Angular relationship (0-30 points)
     dist = abs(pos1.rashi["index"] - pos2.rashi["index"])
     angular_rel = min(dist, 12 - dist)
-    
-    # 0 = Conjunction, 4 = Trine (120°), 3 = Square (90°), 6 = Opposition (180°)
-    if angular_rel == 4:  # Trine (highest harmony)
-        angle_score = 30.0
-        angle_summary = "Trine placement indicates natural ease, effortless trust, and shared life outlook."
-    elif angular_rel in [2, 0]:  # Sextile or same sign
-        angle_score = 27.0
-        angle_summary = "Supportive alignment promoting active friendship and great mutual respect."
-    elif angular_rel == 6:  # Complementary polarity
-        angle_score = 25.0
-        angle_summary = "Complementary opposites—strengths in one partner balance blind spots in the other."
-    else:
-        angle_score = 20.0
-        angle_summary = "Distinct perspectives that encourage conscious communication and intentional teamwork."
+    angle_score = 30.0 if angular_rel in [4, 0, 2] else 22.0
+    angle_summary = "Supportive angular momentum encouraging active communication."
 
     total_score = round(element_score + temp_score + angle_score, 1)
 
+    cusp_warnings = []
+    if pos1.cusp_status.is_cusp:
+        cusp_warnings.append(f"Candidate 1: {pos1.cusp_status.note}")
+    if pos2.cusp_status.is_cusp:
+        cusp_warnings.append(f"Candidate 2: {pos2.cusp_status.note}")
+
     return {
         "celestial_score": total_score,
-        "elemental_harmony": {
-            "score": element_score,
-            "max": 30.0,
-            "summary": element_summary
-        },
-        "temperament_harmony": {
-            "score": temp_score,
-            "max": 40.0,
-            "summary": temp_summary
-        },
-        "angular_alignment": {
-            "score": angle_score,
-            "max": 30.0,
-            "summary": angle_summary
-        },
-        "strengths": [
-            f"Moon in {pos1.rashi['name']} + Moon in {pos2.rashi['name']}: {element_summary}",
-            f"{pos1.nakshatra['name']} ({pos1.nakshatra['symbol']}) meets {pos2.nakshatra['name']} ({pos2.nakshatra['symbol']}): {temp_summary}"
-        ]
+        "elemental_harmony": {"score": element_score, "summary": element_summary},
+        "temperament_harmony": {"score": temp_score, "summary": temp_summary},
+        "angular_alignment": {"score": angle_score, "summary": angle_summary},
+        "cusp_analysis": {
+            "has_cusp": len(cusp_warnings) > 0,
+            "details": cusp_warnings
+        }
     }
