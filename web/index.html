@@ -3,226 +3,381 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>K.N.O.T. — Intentional Matrimony & Dual Compatibility for Professionals</title>
-  <meta name="description" content="Dating for marriage on your own terms. Combining Vedic synastry and real-world lifestyle values for urban professionals.">
+  <title>K.N.O.T. — Intentional Matrimony & Cosmic Synastry for Modern Professionals</title>
+  <meta name="description" content="The category-killer relationship platform for urban professionals. 3 Cosmic Drops at 8:00 PM, modern psychological translation, and the Family-Ready Vault.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <div class="glow-orb glow-1"></div>
-  <div class="glow-orb glow-2"></div>
+  <!-- Dynamic Celestial Canvas -->
+  <canvas id="celestialCanvas"></canvas>
+  <div class="aurora aurora-top"></div>
+  <div class="aurora aurora-mid"></div>
 
-  <!-- Navigation -->
+  <!-- Editorial Navigation -->
   <nav>
-    <div class="nav-container">
-      <a href="#" class="brand-logo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M12 3a9 9 0 0 1 9 9"/>
-        </svg>
-        K.N.O.T.
+    <div class="nav-inner">
+      <a href="#" class="brand">
+        <div class="brand-monogram">K</div>
+        <span class="brand-name">K.N.O.T.</span>
       </a>
-      <a href="#waitlist" class="nav-cta">Join Private Beta</a>
+
+      <div class="nav-links">
+        <a href="#studio" class="nav-link">The Studio</a>
+        <a href="#comparison" class="nav-link">The Paradigm</a>
+        <a href="#vault" class="nav-link">Family Vault</a>
+      </div>
+
+      <a href="#waitlist" class="nav-cta">Claim Private Access</a>
     </div>
   </nav>
 
   <!-- Hero Section -->
   <header class="hero">
-    <div class="badge-pill">
-      <span>🚀</span> Waitlist Live for Bengaluru & Mumbai / Delhi NCR
-    </div>
+    <div class="editorial-kicker">Bengaluru • Mumbai • Delhi NCR • Diaspora</div>
     <h1>
-      Stop dating people whose Saturn is actively <span class="gradient-text">ruining your life.</span>
+      Dating for marriage. Without the <em>biodata circus</em> or the <em>swipe burnout.</em>
     </h1>
     <p class="lead">
-      Dating with the explicit intention of marriage. No infinite swiping, no awkward parent-run biodata circus, and zero fear-mongering. Just 3 high-intent introductions every evening.
+      No infinite swipe decks. No predatory fear-mongering. Just 3 verified, high-intent introductions delivered every evening at 8:00 PM via Vedic synastry and modern life values.
     </p>
 
-    <!-- Waitlist Card -->
-    <div id="waitlist">
-      <form id="waitlistForm" class="waitlist-card">
-        <input type="email" id="emailInput" placeholder="Enter your work or personal email..." required>
-        <select id="citySelect">
+    <!-- Waitlist Bar -->
+    <div class="waitlist-container" id="waitlist">
+      <form id="waitlistForm" class="waitlist-bar">
+        <input type="email" placeholder="Enter your corporate or personal email..." required>
+        <select>
           <option value="Bengaluru">Bengaluru</option>
           <option value="Mumbai">Mumbai / Pune</option>
           <option value="Delhi">Delhi NCR</option>
           <option value="Hyderabad">Hyderabad</option>
           <option value="Global">Global Diaspora</option>
         </select>
-        <button type="submit">Claim Early Access</button>
+        <button type="submit">Join Private Beta</button>
       </form>
 
-      <div id="waitlistSuccess" style="display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-green); border-radius: 12px; padding: 20px; max-width: 560px; margin: 0 auto;">
-        <h3 style="color: var(--accent-green); margin-bottom: 6px;">🎉 You're on the list!</h3>
-        <p style="color: var(--text-secondary); font-size: 0.95rem;">
-          You reserved spot <strong id="spotNumber" style="color: #fff;">#1,428</strong>. We are admitting verified professionals in weekly cohorts starting with Bengaluru and Mumbai.
-        </p>
+      <div id="waitlistSuccess" style="display: none; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--emerald-primary); border-radius: 100px; padding: 14px 28px; max-width: 540px; margin: 0 auto;">
+        <span style="color: var(--emerald-primary); font-weight: 600;">✓ Spot Reserved</span> — You are <strong id="waitlistNumber" style="color: #fff;">#1,418</strong> in the verification queue.
       </div>
 
-      <p class="waitlist-subtext">🔒 Strictly verified via LinkedIn or Corporate Email. Zero bots. Zero casual hookups.</p>
+      <p class="waitlist-footnote">Verified via LinkedIn & Corporate Email • Maximum 3 Active Concurrency • Zero Bots</p>
     </div>
   </header>
 
-  <!-- Interactive Compatibility Preview -->
-  <section class="demo-section">
-    <div class="demo-box">
-      <div class="demo-header">
-        <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-indigo); text-transform: uppercase; letter-spacing: 1px;">Live Interactive Preview</span>
-        <h3 style="margin-top: 4px;">Experience the Dual-Layer Compatibility Model</h3>
-        <p>See how K.N.O.T. translates celestial alignment and financial values into modern psychology.</p>
+  <!-- Interactive Platform Studio (Core UI Showcase) -->
+  <section class="studio-section" id="studio">
+    <div class="studio-frame">
+      
+      <!-- Studio Tabs -->
+      <div class="studio-nav">
+        <button class="studio-tab active" data-tab="dropsPanel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          3 Cosmic Drops (8:00 PM)
+        </button>
+        <button class="studio-tab" data-tab="calcPanel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          Dual-Layer Matchmaker
+        </button>
+        <button class="studio-tab" data-tab="vaultPanel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Family-Ready Vault
+        </button>
       </div>
 
-      <div class="demo-inputs">
-        <div class="demo-col">
-          <h4>Candidate 1 (You)</h4>
-          <div class="form-group">
-            <label>Moon / Zodiac Sign</label>
-            <select id="sign1">
-              <option value="Scorpio">Scorpio (Vrishchika)</option>
-              <option value="Taurus">Taurus (Vrishabha)</option>
-              <option value="Leo">Leo (Simha)</option>
-              <option value="Aquarius">Aquarius (Kumbha)</option>
-              <option value="Virgo">Virgo (Kanya)</option>
-              <option value="Pisces">Pisces (Meena)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Financial Philosophy</label>
-            <select id="fin1">
-              <option value="Disciplined Investor">Investor / Wealth Compounding</option>
-              <option value="Balanced Prudence">Balanced & Prudent</option>
-              <option value="Disciplined Saver">Disciplined Saver</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="demo-col">
-          <h4>Candidate 2 (Match)</h4>
-          <div class="form-group">
-            <label>Moon / Zodiac Sign</label>
-            <select id="sign2">
-              <option value="Aquarius">Aquarius (Kumbha)</option>
-              <option value="Taurus">Taurus (Vrishabha)</option>
-              <option value="Virgo">Virgo (Kanya)</option>
-              <option value="Cancer">Cancer (Karka)</option>
-              <option value="Aries">Aries (Mesha)</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Financial Philosophy</label>
-            <select id="fin2">
-              <option value="Balanced Prudence">Balanced & Prudent</option>
-              <option value="Disciplined Investor">Investor / Wealth Compounding</option>
-              <option value="Experiential">Experiential Living</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div class="demo-action">
-        <button id="calcBtn" class="btn-calculate">Evaluate Dual Compatibility</button>
-      </div>
-
-      <!-- Result Card -->
-      <div id="resultCard" class="demo-result-card">
-        <div class="demo-result-header">
+      <!-- Tab 1: 3 Cosmic Drops Panel -->
+      <div class="studio-panel active" id="dropsPanel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px;">
           <div>
-            <span style="font-size: 0.75rem; font-weight: 700; color: var(--accent-indigo); text-transform: uppercase;">Composite Synergy</span>
-            <h4 style="font-size: 1.15rem; color: #fff;">Exceptional Natural Alignment</h4>
+            <h3 style="font-family: var(--font-serif); font-size: 1.5rem;">Today's Curated Introductions</h3>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Scarcity creates intention. Refreshes tomorrow at Shubh Muhurat.</p>
           </div>
-          <div id="resIndex" class="index-badge">91/100</div>
+          <button class="privacy-toggle-btn" style="background: rgba(168, 85, 247, 0.1); border: 1px solid rgba(168, 85, 247, 0.3); color: #d8b4fe; padding: 6px 14px; border-radius: 100px; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+            Toggle Photo Privacy Shield
+          </button>
         </div>
 
-        <div class="result-pills">
-          <div class="pill-item">
-            <strong id="resBanter">Banter Score: 94%</strong>
-            <p id="resBanterDesc">Effortless conversational chemistry and shared social humor.</p>
-          </div>
-          <div class="pill-item">
-            <strong id="resPacing">Passion & Pacing: 88%</strong>
-            <p id="resPacingDesc">Balanced momentum across both career milestones and home planning.</p>
-          </div>
-        </div>
+        <div class="drops-grid">
+          <!-- Drop 1 -->
+          <div class="candidate-card">
+            <div class="card-header">
+              <div class="avatar-wrap">
+                <span class="avatar-initials">A</span>
+                <div class="blur-badge">🔒</div>
+              </div>
+              <div class="score-disc">
+                <div class="score-number">91</div>
+                <div class="score-label">K.N.O.T. Index</div>
+              </div>
+            </div>
+            <div class="candidate-info">
+              <h4>Ananya Iyer <span class="verified-icon">✓</span></h4>
+              <p class="candidate-role">Senior Consultant @ McKinsey • Bangalore</p>
+            </div>
+            
+            <div class="psych-badge">
+              <strong>Banter Score: 94% (Gana Maitri)</strong>
+              <p>Both of you process high-stress workloads through dry, rapid humor.</p>
+            </div>
+            <div class="psych-badge">
+              <strong>Passion & Pacing: 88% (Bhakoot)</strong>
+              <p>Complementary tempos: one thrives on spontaneous trips, the other plans 48h ahead.</p>
+            </div>
 
-        <div class="icebreaker-box">
-          <strong>DYNAMIC COSMIC ICEBREAKER</strong>
-          <span id="resIcebreaker">"Your Mars squares their Venus—ask what hill they are willing to die on."</span>
+            <div class="icebreaker-card">
+              ⚡ <strong>DYNAMIC ICEBREAKER:</strong> Ask her what hill she is willing to defend to the death.
+            </div>
+
+            <button class="card-cta">Send Intent & Connect</button>
+          </div>
+
+          <!-- Drop 2 -->
+          <div class="candidate-card">
+            <div class="card-header">
+              <div class="avatar-wrap">
+                <span class="avatar-initials">S</span>
+                <div class="blur-badge">🔒</div>
+              </div>
+              <div class="score-disc">
+                <div class="score-number">86</div>
+                <div class="score-label">K.N.O.T. Index</div>
+              </div>
+            </div>
+            <div class="candidate-info">
+              <h4>Dr. Siddharth Mehta <span class="verified-icon">✓</span></h4>
+              <p class="candidate-role">Surgeon @ Manipal Hospital • Mumbai</p>
+            </div>
+
+            <div class="psych-badge">
+              <strong>Intellectual Complicity: 90%</strong>
+              <p>Effortless depth across ethics, long-term investments, and career pace.</p>
+            </div>
+            <div class="psych-badge">
+              <strong>Circadian Sync: 85% (Nadi)</strong>
+              <p>Both disciplined early risers with focused morning recovery routines.</p>
+            </div>
+
+            <div class="icebreaker-card">
+              ⚡ <strong>DYNAMIC ICEBREAKER:</strong> Scorpio meets Virgo: Ask about his rainy-day ritual.
+            </div>
+
+            <button class="card-cta">Send Intent & Connect</button>
+          </div>
+
+          <!-- Drop 3 -->
+          <div class="candidate-card">
+            <div class="card-header">
+              <div class="avatar-wrap">
+                <span class="avatar-initials">M</span>
+                <div class="blur-badge">🔒</div>
+              </div>
+              <div class="score-disc">
+                <div class="score-number">82</div>
+                <div class="score-label">K.N.O.T. Index</div>
+              </div>
+            </div>
+            <div class="candidate-info">
+              <h4>Meera Sen <span class="verified-icon">✓</span></h4>
+              <p class="candidate-role">Founding Designer @ FinTech • Delhi NCR</p>
+            </div>
+
+            <div class="psych-badge">
+              <strong>Creative Synergy: 87%</strong>
+              <p>High mutual respect for aesthetic autonomy and independent careers.</p>
+            </div>
+            <div class="psych-badge">
+              <strong>Fluid Pacing: 80%</strong>
+              <p>Dynamic schedules that flourish outside rigid corporate 9-to-5s.</p>
+            </div>
+
+            <div class="icebreaker-card">
+              ⚡ <strong>DYNAMIC ICEBREAKER:</strong> Fire meets Air: Ask what project she's daydreaming about.
+            </div>
+
+            <button class="card-cta">Send Intent & Connect</button>
+          </div>
         </div>
       </div>
+
+      <!-- Tab 2: Dual-Layer Matchmaker Panel -->
+      <div class="studio-panel" id="calcPanel">
+        <div class="calc-grid">
+          <div class="calc-column">
+            <h4>Candidate 1 (Your Profile)</h4>
+            <div class="field-group">
+              <label>Moon Rashi (Sidereal)</label>
+              <select id="userSign">
+                <option value="Scorpio">Scorpio (Vrishchika)</option>
+                <option value="Taurus">Taurus (Vrishabha)</option>
+                <option value="Leo">Leo (Simha)</option>
+                <option value="Aquarius">Aquarius (Kumbha)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Financial Philosophy</label>
+              <select id="userFin">
+                <option value="Investor">Disciplined Investor / Compounding</option>
+                <option value="Balanced">Balanced & Prudent</option>
+                <option value="Saver">Disciplined Saver</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="calc-column">
+            <h4>Candidate 2 (Prospective Match)</h4>
+            <div class="field-group">
+              <label>Moon Rashi (Sidereal)</label>
+              <select id="matchSign">
+                <option value="Aquarius">Aquarius (Kumbha)</option>
+                <option value="Scorpio">Scorpio (Vrishchika)</option>
+                <option value="Taurus">Taurus (Vrishabha)</option>
+                <option value="Cancer">Cancer (Karka)</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label>Financial Philosophy</label>
+              <select id="matchFin">
+                <option value="Balanced">Balanced & Prudent</option>
+                <option value="Investor">Disciplined Investor</option>
+                <option value="Experiential">Experiential Living</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <button id="runMatchBtn" class="btn-run-match">Run Multi-Vector KMVA Analysis</button>
+
+        <div id="matchResultBox" style="display: none; margin-top: 32px; background: rgba(226, 201, 146, 0.04); border: 1px solid var(--border-active); border-radius: 16px; padding: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+              <span style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--gold-primary); letter-spacing: 1px; text-transform: uppercase;">KMVA Engine Output</span>
+              <h4 style="font-size: 1.25rem;">Exceptional Multi-Vector Alignment</h4>
+            </div>
+            <div style="font-family: var(--font-serif); font-size: 2.2rem; color: var(--gold-primary);">
+              <span id="outputKnotScore">88</span><span style="font-size: 1rem; color: var(--text-dim);">/100</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+            <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px;">
+              <strong style="color: #c4b5fd; font-size: 0.85rem;" id="outputBanter">Banter Score: 94%</strong>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;">Gana alignment confirms effortless intellectual friendship.</p>
+            </div>
+            <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px;">
+              <strong style="color: #6ee7b7; font-size: 0.85rem;">Shastric Cancellation Active</strong>
+              <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 2px;" id="outputCancellation">Mars & Saturn share natural neutral friendship; Dosha cancelled.</p>
+            </div>
+          </div>
+
+          <div style="background: rgba(249, 115, 22, 0.08); border-left: 2px solid var(--accent-orange); padding: 10px 14px; border-radius: 4px; font-size: 0.8rem; color: #fdba74;" id="outputIcebreaker">
+            "Scorpio meets Aquarius: Ask them what hill they're willing to die on."
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: Family-Ready Vault Panel -->
+      <div class="studio-panel" id="vaultPanel">
+        <div class="vault-view" id="vault">
+          <div class="vault-seal">AUTHENTIC<br>VEDIC</div>
+          <div class="vault-title">Matrimonial Horoscope & Bio-Data</div>
+          <div class="vault-subtitle">Prepared for Family & Parental Review</div>
+
+          <table class="vault-table">
+            <tr>
+              <td class="label">Prospective Candidates</td>
+              <td class="val">Rahul Sharma & Ananya Iyer</td>
+            </tr>
+            <tr>
+              <td class="label">Guna Milan Score</td>
+              <td class="val"><span class="vault-badge-auspicious">31 / 36 Auspicious Alignment</span></td>
+            </tr>
+            <tr>
+              <td class="label">Manglik Status</td>
+              <td class="val">Compatible (Neutral / No Dosha Friction)</td>
+            </tr>
+            <tr>
+              <td class="label">Ephemeris Calculation</td>
+              <td class="val">Vedic Sidereal Lahiri Ephemeris Verified</td>
+            </tr>
+            <tr>
+              <td class="label">Education & Career</td>
+              <td class="val">B.Tech / MBA • Senior Leadership in Consulting</td>
+            </tr>
+            <tr>
+              <td class="label">Family Values Alignment</td>
+              <td class="val">Mutual Intent for Close Proximity Living</td>
+            </tr>
+          </table>
+
+          <div class="vault-note">
+            * Note for Parents: Formatted cleanly as a traditional matrimonial horoscope sheet. Mentions zero dating apps or swipe terminology, allowing couples to respect family traditions comfortably.
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <!-- 6 Pillars Showcase -->
-  <section class="pillars-section">
-    <div class="section-title">
-      <h2>The 6 Pillars That Kill App Fatigue</h2>
-      <p>Built specifically to solve the trust, liquidity, and parental gap in modern Indian matrimony.</p>
+  <!-- Comparison Matrix -->
+  <section class="comparison-section" id="comparison">
+    <div class="section-headline">
+      <h2>The New Matrimonial Standard</h2>
+      <p style="color: var(--text-muted);">Why K.N.O.T. makes legacy platforms obsolete.</p>
     </div>
 
-    <div class="pillars-grid">
-      <div class="pillar-card">
-        <span class="pillar-icon">⏳</span>
-        <h3>3 Cosmic Drops at 8:00 PM</h3>
-        <p>No endless swipe decks. Every evening at 8:00 PM (Shubh Muhurat), receive 3 curated high-intent profiles based on Vedic synastry and verified values.</p>
-      </div>
-
-      <div class="pillar-card">
-        <span class="pillar-icon">🧠</span>
-        <h3>Modern Psychological Translation</h3>
-        <p>We translate Sanskrit jargon into relatable psychology. "Bhakoot Dosha" becomes <em>Passion & Pacing</em>; "Gana Maitri" becomes your <em>Banter Score (94%)</em>.</p>
-      </div>
-
-      <div class="pillar-card">
-        <span class="pillar-icon">📲</span>
-        <h3>WhatsApp "Ask Mom" Card</h3>
-        <p>Zero birth-time friction. Start instantly with your birth date. Need your exact hospital time later? One tap generates a polite WhatsApp message for your mom.</p>
-      </div>
-
-      <div class="pillar-card">
-        <span class="pillar-icon">🛡️</span>
-        <h3>The Family-Ready Vault</h3>
-        <p>Chatted for 7+ days? Download a formal, clean 1-page Kundli and bio-data sheet to share directly with conservative parents—with zero mention of a dating app.</p>
-      </div>
-
-      <div class="pillar-card">
-        <span class="pillar-icon">💎</span>
-        <h3>Ethical Micro-Monetization</h3>
-        <p>Matching and messaging are 100% free to protect liquidity. Pay ₹49–₹99 via UPI only when you want an instant synastry deep-dive before an IRL date.</p>
-      </div>
-
-      <div class="pillar-card">
-        <span class="pillar-icon">🔒</span>
-        <h3>Women-First Privacy Shield</h3>
-        <p>Never display exact birth data publicly. Includes a mandatory "Blur Photos Until Mutual Match" toggle to explore safely without fear of family screenshots.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Family Vault Callout Banner -->
-  <section class="vault-banner">
-    <div class="vault-box">
-      <div class="vault-text">
-        <h3>The Secret Weapon: The Family-Ready Dossier</h3>
-        <p>
-          In India, the hardest moment is telling your parents how you met. K.N.O.T. provides an authentic, traditional Kundli & bio-data sheet that honors family tradition while keeping your modern dating life private.
-        </p>
-      </div>
-      <div class="vault-badge">
-        <strong>100% Parent-Ready</strong>
-        <span>1-Page PDF Export</span>
-      </div>
-    </div>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th class="highlight">K.N.O.T.</th>
+          <th>Tinder / Bumble</th>
+          <th>Shaadi.com</th>
+          <th>Astrotalk</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Core Intent</td>
+          <td class="highlight">Dating for Marriage</td>
+          <td>Casual Dating / Hookups</td>
+          <td>Parent-Driven Marriage</td>
+          <td>Panic / Heartbreak Calls</td>
+        </tr>
+        <tr>
+          <td>Swiping Mechanics</td>
+          <td class="highlight">3 Cosmic Drops at 8:00 PM</td>
+          <td>Infinite Addictive Swipes</td>
+          <td>Endless Resume Search</td>
+          <td>None (Consultation Queue)</td>
+        </tr>
+        <tr>
+          <td>Astrology Approach</td>
+          <td class="highlight">Modern Psychology + Zero Fear</td>
+          <td>Lightweight Sun-Sign Tag</td>
+          <td>Rigid 36-Point Filter</td>
+          <td>Predatory Fear & Remedies</td>
+        </tr>
+        <tr>
+          <td>Parental Bridge</td>
+          <td class="highlight">1-Page Family Vault Dossier</td>
+          <td>Zero (Stigma)</td>
+          <td>Parent-Controlled Account</td>
+          <td>None</td>
+        </tr>
+        <tr>
+          <td>Anti-Ghosting Limit</td>
+          <td class="highlight">Max 3 Concurrent Chats</td>
+          <td>Infinite Matches / Hoarding</td>
+          <td>No Limit</td>
+          <td>Per-Minute Billed</td>
+        </tr>
+      </tbody>
+    </table>
   </section>
 
   <!-- Footer -->
   <footer>
-    <p>
-      © 2026 K.N.O.T. • Knowledge • Navigation • Orbit • Trust. 
-      Open Source Core on <a href="https://github.com/archiboltmusk/K.N.O.T." target="_blank">GitHub</a>.
-    </p>
-    <p style="margin-top: 8px; font-size: 0.8rem; color: #475569;">
-      100% transparent astronomical calculations. Never charging for curses, remedies, or fake predictions.
-    </p>
+    <p>© 2026 K.N.O.T. • Knowledge • Navigation • Orbit • Trust. Open source core on <a href="https://github.com/archiboltmusk/K.N.O.T." target="_blank">GitHub</a>.</p>
+    <p style="margin-top: 8px; color: var(--text-dim); font-size: 0.8rem;">100% transparent calculations. Never charging for curses, remedies, or fake predictions.</p>
   </footer>
 
   <script src="app.js"></script>
