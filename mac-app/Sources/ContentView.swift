@@ -33,6 +33,8 @@ public struct ContentView: View {
             switch selectedTab {
             case "drops":
                 DailyDropsView()
+            case "pushcards":
+                PushCardView()
             case "onboarding":
                 OnboardingView()
             case "manifesto":
@@ -82,6 +84,13 @@ public struct ContentView: View {
                     label: "3 Cosmic Drops",
                     icon: "sparkles.rectangle.stack.fill",
                     badge: "8:00 PM"
+                )
+                
+                sidebarButton(
+                    id: "pushcards",
+                    label: "Daily Story Cards",
+                    icon: "quote.bubble.fill",
+                    badge: "Viral"
                 )
                 
                 sidebarButton(

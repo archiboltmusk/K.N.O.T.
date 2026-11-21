@@ -26,19 +26,25 @@ public struct DailyDropsView: View {
                             // 1. Hero Photo Card with Scrim & Badges
                             heroPhotoCard(candidate: candidate)
                             
-                            // 2. Cosmic & Psychological Translation Card
+                            // 2. Voice Prompt Audio Card (Inspired by Hinge)
+                            voicePromptCard(candidate: candidate)
+                            
+                            // 3. Dasha Horizon Timing Curve (Inspired by The Pattern)
+                            dashaTimingCurveCard(candidate: candidate)
+                            
+                            // 4. Cosmic & Psychological Translation Card
                             cosmicSynergyCard(candidate: candidate)
                             
-                            // 3. Prompt Card 1 (Hinge Style)
+                            // 5. Prompt Card 1 (Hinge Style)
                             promptCard(
                                 title: candidate.prompt1Title,
                                 answer: candidate.prompt1Answer
                             )
                             
-                            // 4. The 4 Reality Values Card
+                            // 6. The 4 Reality Values Card
                             valuesOverviewCard(candidate: candidate)
                             
-                            // 5. Prompt Card 2
+                            // 7. Prompt Card 2
                             promptCard(
                                 title: candidate.prompt2Title,
                                 answer: candidate.prompt2Answer
@@ -246,6 +252,116 @@ public struct DailyDropsView: View {
             RoundedRectangle(cornerRadius: 24)
                 .stroke(KnotTheme.border, lineWidth: 1)
         )
+    }
+    
+    // MARK: - Voice Prompt Card (Hinge Inspired)
+    @State private var isPlayingVoice = false
+    
+    private func voicePromptCard(candidate: CandidateCardData) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Label("VOICE PROMPT • 0:28", systemImage: "waveform")
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(KnotTheme.gold)
+                Spacer()
+                Text("Recorded Yesterday")
+                    .font(.system(size: 10))
+                    .foregroundColor(.secondary)
+            }
+            
+            Text("\"The most spontaneous decision I've made this year...\"")
+                .font(.system(size: 16, weight: .semibold, design: .serif))
+                .foregroundColor(.white)
+            
+            // Audio Playback Bar & Waveform
+            HStack(spacing: 14) {
+                Button(action: { isPlayingVoice.toggle() }) {
+                    ZStack {
+                        Circle().fill(KnotTheme.goldGradient).frame(width: 44, height: 44)
+                        Image(systemName: isPlayingVoice ? "pause.fill" : "play.fill")
+                            .foregroundColor(.black)
+                            .font(.system(size: 16, weight: .bold))
+                    }
+                }
+                .buttonStyle(.plain)
+                
+                // Animated Waveform Simulation
+                HStack(spacing: 3) {
+                    ForEach(0..<24, id: \.self) { i in
+                        RoundedRectangle(cornerRadius: 2)
+                            .fill(isPlayingVoice ? KnotTheme.gold : Color.white.opacity(0.2))
+                            .frame(width: 4, height: CGFloat(sin(Double(i) * 0.8) * 12.0 + 16.0))
+                            .animation(.easeInOut(duration: 0.3).repeatForever().delay(Double(i) * 0.04), value: isPlayingVoice)
+                    }
+                }
+                
+                Spacer()
+                
+                Text(isPlayingVoice ? "0:14" : "0:28")
+                    .font(.system(size: 12, weight: .medium, design: .monospaced))
+                    .foregroundColor(.secondary)
+            }
+            .padding(14)
+            .background(KnotTheme.bgDeep)
+            .cornerRadius(12)
+        }
+        .padding(20)
+        .background(KnotTheme.bgCard)
+        .cornerRadius(20)
+        .overlay(RoundedRectangle(cornerRadius: 20).stroke(KnotTheme.border, lineWidth: 1))
+    }
+    
+    // MARK: - Dasha Horizon Timing Curve (The Pattern Inspired)
+    private func dashaTimingCurveCard(candidate: CandidateCardData) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Label("DASHA HORIZON • LIFE TIMING", systemImage: "chart.line.uptrend.xyaxis")
+                    .font(.system(size: 10, weight: .bold, design: .monospaced))
+                    .foregroundColor(KnotTheme.purple)
+                Spacer()
+                Text("Timing in Sync: 94%")
+                    .font(.caption.bold())
+                    .foregroundColor(KnotTheme.emerald)
+            }
+            
+            Divider().background(KnotTheme.border)
+            
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(spacing: 8) {
+                    Circle().fill(KnotTheme.indigo).frame(width: 8, height: 8)
+                    Text("Your Life Phase: Jupiter-Mercury")
+                        .font(.caption.bold())
+                        .foregroundColor(.white)
+                    Spacer()
+                    Text("Career & Intellectual Expansion")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                
+                HStack(spacing: 8) {
+                    Circle().fill(KnotTheme.gold).frame(width: 8, height: 8)
+                    Text("\(candidate.name)'s Phase: Venus-Moon")
+                        .font(.caption.bold())
+                        .foregroundColor(.white)
+                    Spacer()
+                    Text("Partnership & Nesting Readiness")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(12)
+            .background(KnotTheme.bgDeep)
+            .cornerRadius(10)
+            
+            Text("Timing Analysis: Both of you are entering complementary multi-year periods where personal career achievements naturally stabilize to welcome long-term marriage.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .lineSpacing(3)
+        }
+        .padding(20)
+        .background(KnotTheme.bgCard)
+        .cornerRadius(20)
+        .overlay(RoundedRectangle(cornerRadius: 20).stroke(KnotTheme.border, lineWidth: 1))
     }
     
     // MARK: - Cosmic Synergy Card (Psychological Translation)

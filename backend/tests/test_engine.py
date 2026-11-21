@@ -28,9 +28,24 @@ from app.engine.algorithm import (
     check_chat_concurrency_and_ghosting
 )
 from app.engine.vault import generate_vault_dossier, verify_vault_hash
+from app.engine.dasha import calculate_current_dasha, evaluate_dasha_timing_synergy
 
 
 class TestKnotProductionEngine(unittest.TestCase):
+
+    def test_vimshottari_dasha_timing(self):
+        # Candidate born May 15, 1995 with Moon in Scorpio (Anuradha, lord Saturn)
+        b_dt = datetime(1995, 5, 15, 14, 30, tzinfo=timezone.utc)
+        dasha = calculate_current_dasha(b_dt, moon_longitude=218.0)
+        self.assertIn("active_dasha_lord", dasha)
+        self.assertIn("life_phase_theme", dasha)
+
+        # Test timing synergy
+        dasha1 = {"active_dasha_lord": "Jupiter", "life_phase_theme": "Expansion"}
+        dasha2 = {"active_dasha_lord": "Venus", "life_phase_theme": "Nesting"}
+        synergy = evaluate_dasha_timing_synergy(dasha1, dasha2)
+        self.assertTrue(synergy["is_in_sync"])
+        self.assertEqual(synergy["timing_score"], 94.0)
 
     def test_cusp_detection(self):
         # Degree exactly at 0.4° (inside ±0.75° cusp buffer of Aries 0°)
