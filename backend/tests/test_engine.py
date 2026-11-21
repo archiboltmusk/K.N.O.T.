@@ -29,9 +29,52 @@ from app.engine.algorithm import (
 )
 from app.engine.vault import generate_vault_dossier, verify_vault_hash
 from app.engine.dasha import calculate_current_dasha, evaluate_dasha_timing_synergy
+from app.engine.concierge import generate_first_date_itinerary
+from app.engine.observer import generate_elder_observer_pass
+from app.engine.kyc import verify_digilocker_identity, sign_single_status_affidavit
+from app.engine.zkp import generate_zk_income_proof, generate_zk_compatibility_proof
 
 
 class TestKnotProductionEngine(unittest.TestCase):
+
+    def test_ai_date_concierge(self):
+        itinerary = generate_first_date_itinerary("Earth", "Water", "Bengaluru")
+        self.assertIn("venues", itinerary)
+        self.assertIn("conversation_spark", itinerary)
+        self.assertEqual(itinerary["pairing"], "Earth & Water")
+
+    def test_elder_observer_pass_permissions(self):
+        candidate = {
+            "name": "Ananya Iyer",
+            "role": "Senior Consultant",
+            "company": "McKinsey",
+            "education": "IIM Ahmedabad",
+            "city": "Bangalore"
+        }
+        pass_data = generate_elder_observer_pass("usr_123", candidate)
+        self.assertTrue(pass_data["access_permissions"]["can_view_dossier"])
+        # Privacy boundaries must hold
+        self.assertFalse(pass_data["access_permissions"]["can_view_private_chats"])
+        self.assertFalse(pass_data["access_permissions"]["can_browse_other_profiles"])
+
+    def test_kyc_and_single_affidavit(self):
+        kyc = verify_digilocker_identity("Rahul Sharma", "1995-05-15", "token_dl_99")
+        self.assertEqual(kyc["status"], "VERIFIED_GOVT_KYC")
+        self.assertTrue(kyc["age_verified"])
+
+        affidavit = sign_single_status_affidavit("usr_123", "Rahul Sharma", "never_married")
+        self.assertTrue(affidavit["is_legally_binding"])
+        self.assertEqual(affidavit["declared_status"], "never_married")
+
+    def test_zk_proofs(self):
+        # Candidate earns 35 LPA, testing against 25 LPA threshold
+        proof = generate_zk_income_proof(35.0, 25.0, "user_salt_123")
+        self.assertTrue(proof["is_verified"])
+        self.assertTrue(proof["zk_proof_hash"].startswith("zk-snark-"))
+
+        # Guna compatibility proof
+        c_proof = generate_zk_compatibility_proof(31, 28)
+        self.assertTrue(c_proof["meets_threshold"])
 
     def test_vimshottari_dasha_timing(self):
         # Candidate born May 15, 1995 with Moon in Scorpio (Anuradha, lord Saturn)

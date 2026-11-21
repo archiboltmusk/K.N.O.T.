@@ -33,6 +33,10 @@ public struct ContentView: View {
             switch selectedTab {
             case "drops":
                 DailyDropsView()
+            case "concierge":
+                DateConciergeView()
+            case "observer":
+                ElderObserverView()
             case "pushcards":
                 PushCardView()
             case "onboarding":
@@ -84,6 +88,20 @@ public struct ContentView: View {
                     label: "3 Cosmic Drops",
                     icon: "sparkles.rectangle.stack.fill",
                     badge: "8:00 PM"
+                )
+                
+                sidebarButton(
+                    id: "concierge",
+                    label: "AI Date Concierge",
+                    icon: "cup.and.saucer.fill",
+                    badge: "New"
+                )
+                
+                sidebarButton(
+                    id: "observer",
+                    label: "Elder Observer Pass",
+                    icon: "person.2.fill",
+                    badge: "Family"
                 )
                 
                 sidebarButton(
