@@ -48,8 +48,10 @@ build/
 .next/
 out/
 
-# IDEs and OS
-.DS_Store
+# macOS application bundles
+*.app/
+*.dSYM/
+
 .idea/
 .vscode/
 *.swp
