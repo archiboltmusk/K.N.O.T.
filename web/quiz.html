@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K.N.O.T. — Discover Your Cosmic-Psychological Archetype</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .quiz-container {
+      max-width: 680px;
+      margin: 60px auto 100px;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .quiz-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 40px;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+    }
+    .progress-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--gold-gradient);
+      width: 25%;
+      transition: width 0.3s ease;
+    }
+    .quiz-step {
+      display: none;
+    }
+    .quiz-step.active {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .question-title {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+    .question-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+    }
+    .option-btn {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 18px 22px;
+      text-align: left;
+      color: #fff;
+      font-size: 0.95rem;
+      cursor: pointer;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      transition: all 0.2s;
+    }
+    .option-btn:hover {
+      background: rgba(226, 201, 146, 0.06);
+      border-color: var(--border-active);
+      transform: translateX(4px);
+    }
+    .option-key {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--gold-primary);
+    }
+    /* Archetype Card Reveal */
+    .archetype-reveal {
+      text-align: center;
+      padding: 20px 0;
+    }
+    .archetype-badge {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      color: var(--gold-primary);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: inline-block;
+    }
+    .archetype-name {
+      font-family: var(--font-serif);
+      font-size: 2.6rem;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+    .archetype-quote {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="celestialCanvas"></canvas>
+  <div class="aurora aurora-top"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-inner">
+      <a href="index.html" class="brand">
+        <div class="brand-monogram">K</div>
+        <span class="brand-name">K.N.O.T.</span>
+      </a>
+      <a href="index.html" class="nav-link">← Back to Overview</a>
+    </div>
+  </nav>
+
+  <div class="quiz-container">
+    <div class="quiz-card">
+      
+      <div class="progress-bar">
+        <div class="progress-fill" id="quizProgress"></div>
+      </div>
+
+      <!-- Question 1: Financial Instinct -->
+      <div class="quiz-step active" id="step1">
+        <h2 class="question-title">An unexpected windfall arrives.</h2>
+        <p class="question-desc">You receive a ₹3,00,000 post-tax bonus. What is your immediate, unfiltered instinct?</p>
+        
+        <button class="option-btn" onclick="selectAnswer(1, 'architect')">
+          <span class="option-key">A</span>
+          <span>Allocate 80% to equity index funds or prepaying debt to buy long-term freedom.</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(1, 'visionary')">
+          <span class="option-key">B</span>
+          <span>Book an international creative trip that shifts your worldview.</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(1, 'anchor')">
+          <span class="option-key">C</span>
+          <span>Split 50% into emergency savings, 30% for family, 20% for personal enjoyment.</span>
+        </button>
+      </div>
+
+      <!-- Question 2: Career & High-Stress Pacing -->
+      <div class="quiz-step" id="step2">
+        <h2 class="question-title">Managing the crunch season.</h2>
+        <p class="question-desc">Your team enters a 3-week critical release requiring 12-hour days, right over an anniversary.</p>
+        
+        <button class="option-btn" onclick="selectAnswer(2, 'architect')">
+          <span class="option-key">A</span>
+          <span>Execute the crunch relentlessly; celebrate lavishly once the milestone is shipped.</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(2, 'anchor')">
+          <span class="option-key">B</span>
+          <span>Strictly protect the anniversary evening; work boundaries keep long-term peace.</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(2, 'catalyst')">
+          <span class="option-key">C</span>
+          <span>Fluid compromise: take Friday off, sprint over Sunday night.</span>
+        </button>
+      </div>
+
+      <!-- Question 3: Disagreements & Conflict -->
+      <div class="quiz-step" id="step3">
+        <h2 class="question-title">When emotions run high.</h2>
+        <p class="question-desc">A disagreement about living arrangements becomes tense at dinner. What is your instinctive reaction?</p>
+        
+        <button class="option-btn" onclick="selectAnswer(3, 'visionary')">
+          <span class="option-key">A</span>
+          <span>Step away for a 30-minute walk to process emotions before returning calmly.</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(3, 'catalyst')">
+          <span class="option-key">B</span>
+          <span>Stay at the table and solve it immediately so nothing festers overnight.</span>
+        </button>
+        <button class="option-btn" onclick="selectAnswer(3, 'anchor')">
+          <span class="option-key">C</span>
+          <span>Write down both viewpoints on paper and find a pragmatic middle ground.</span>
+        </button>
+      </div>
+
+      <!-- Archetype Reveal Screen -->
+      <div class="quiz-step" id="stepResult">
+        <div class="archetype-reveal">
+          <span class="archetype-badge">YOUR COSMIC-PSYCHOLOGICAL ARCHETYPE</span>
+          <h2 class="archetype-name" id="archetypeName">The Strategic Architect</h2>
+          <p class="archetype-quote" id="archetypeQuote">
+            "You value long-term architecture over fleeting dopamine. You build enduring empires and need an ambitious partner who respects your boundaries."
+          </p>
+
+          <div style="background: rgba(0,0,0,0.3); border: 1px solid var(--border-active); border-radius: 16px; padding: 20px; margin-bottom: 28px; text-align: left;">
+            <strong style="color: var(--gold-primary); font-size: 0.85rem; display: block; margin-bottom: 6px;">YOUR IDEAL COMPLEMENT</strong>
+            <p style="font-size: 0.85rem; color: var(--text-muted);" id="idealComplement">
+              You thrive best with <strong>The Empathic Anchor (Earth & Water)</strong>—someone whose grounding presence softens your work intensity while respecting your financial discipline.
+            </p>
+          </div>
+
+          <a href="index.html#waitlist" class="nav-cta" style="display: block; padding: 16px; font-size: 0.9rem;">
+            Claim Pre-Filled Beta Spot as an Architect →
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    let currentQuizStep = 1;
+    const scores = { architect: 0, visionary: 0, anchor: 0, catalyst: 0 };
+
+    function selectAnswer(step, phenotype) {
+      scores[phenotype] += 1;
+      document.getElementById(`step${step}`).classList.remove('active');
+
+      if (step < 3) {
+        currentQuizStep = step + 1;
+        document.getElementById(`step${currentQuizStep}`).classList.add('active');
+        document.getElementById('quizProgress').style.width = `${(currentQuizStep / 3) * 100}%`;
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quizProgress').style.width = '100%';
+      document.getElementById('stepResult').classList.add('active');
+
+      const highest = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+      
+      const archetypes = {
+        architect: {
+          name: "The Strategic Architect",
+          quote: "You value compounding freedom over fleeting dopamine. You build enduring foundations and need an ambitious partner who respects your drive.",
+          complement: "You thrive best with an Empathic Anchor (Earth & Water)—someone whose grounding presence softens your work intensity while sharing your financial discipline."
+        },
+        visionary: {
+          name: "The Empathic Visionary",
+          quote: "You navigate life through deep intuition and authentic emotional depth. You refuse superficial small talk and crave intellectual complicity.",
+          complement: "You thrive with a Strategic Architect—someone whose pragmatic stability gives your creative vision a peaceful, structured home."
+        },
+        anchor: {
+          name: "The Grounded Anchor",
+          quote: "You are the calm in every storm. You prioritize peace, family harmony, and emotional safety above status or chaos.",
+          complement: "You thrive with a Dynamic Catalyst—someone whose vibrant spark introduces spontaneous joy without disrupting your inner tranquility."
+        },
+        catalyst: {
+          name: "The Dynamic Catalyst",
+          quote: "You bring electric momentum wherever you go. You process problems through immediate action and infectious energy.",
+          complement: "You thrive with a Grounded Anchor—someone who can calm your racing mind and make ordinary Tuesday evenings feel magical."
+        }
+      };
+
+      const res = archetypes[highest] || archetypes.architect;
+      document.getElementById('archetypeName').textContent = res.name;
+      document.getElementById('archetypeQuote').textContent = `"${res.quote}"`;
+      document.getElementById('idealComplement').innerHTML = `You thrive best with <strong>${res.complement}</strong>`;
+    }
+  </script>
+</body>
+</html>

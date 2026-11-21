@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "K.N.O.T.",
+    "slug": "knot-mobile",
+    "version": "2.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "backgroundColor": "#0A0B10"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "app.knot.mobile"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0A0B10"
+      },
+      "package": "app.knot.mobile"
+    }
+  }
+}

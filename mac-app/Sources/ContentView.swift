@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct ContentView: View {
     @State private var selectedTab = "drops" // Default to the luxury feed!
+    @State private var selectedCity = "Bengaluru"
     
     // Compatibility Studio Profiles
     @State private var p1 = PersonProfile(
@@ -33,8 +34,12 @@ public struct ContentView: View {
             switch selectedTab {
             case "drops":
                 DailyDropsView()
+            case "chat":
+                ChatView()
             case "concierge":
                 DateConciergeView()
+            case "registry":
+                RegistryView()
             case "observer":
                 ElderObserverView()
             case "pushcards":
@@ -79,6 +84,38 @@ public struct ContentView: View {
             .padding(.top, 20)
             .padding(.horizontal, 16)
             
+            // Orbit City Switcher (Diaspora / Major Hubs)
+            Menu {
+                Button("Bengaluru (Indiranagar / Koramangala)") { selectedCity = "Bengaluru" }
+                Button("Mumbai (Bandra / BKC / South Bombay)") { selectedCity = "Mumbai" }
+                Button("Delhi-NCR (Gurugram / South Delhi)") { selectedCity = "Delhi-NCR" }
+                Button("London (Mayfair / Shoreditch)") { selectedCity = "London" }
+                Button("San Francisco Bay Area (South Bay / SF)") { selectedCity = "Bay Area" }
+                Button("Singapore (Marina Bay / Tanjong Pagar)") { selectedCity = "Singapore" }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "location.circle.fill")
+                        .foregroundColor(KnotTheme.gold)
+                    Text("Orbit: \(selectedCity)")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundColor(.white)
+                    Spacer()
+                    Image(systemName: "chevron.up.chevron.down")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(KnotTheme.bgCard)
+                .cornerRadius(8)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(KnotTheme.border, lineWidth: 1)
+                )
+            }
+            .menuStyle(.borderlessButton)
+            .padding(.horizontal, 14)
+            
             Divider().background(KnotTheme.border)
             
             // Primary Nav Links
@@ -91,10 +128,24 @@ public struct ContentView: View {
                 )
                 
                 sidebarButton(
+                    id: "chat",
+                    label: "Matches & Chat",
+                    icon: "bubble.left.and.bubble.right.fill",
+                    badge: "2 Active"
+                )
+                
+                sidebarButton(
                     id: "concierge",
                     label: "AI Date Concierge",
                     icon: "cup.and.saucer.fill",
                     badge: "New"
+                )
+                
+                sidebarButton(
+                    id: "registry",
+                    label: "Milestone Registry",
+                    icon: "banknote.fill",
+                    badge: "50/50"
                 )
                 
                 sidebarButton(

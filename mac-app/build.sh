@@ -42,6 +42,8 @@ swiftc -parse-as-library -target arm64-apple-macosx13.0 \
   "$DIR/Sources/PushCardView.swift" \
   "$DIR/Sources/DateConciergeView.swift" \
   "$DIR/Sources/ElderObserverView.swift" \
+  "$DIR/Sources/ChatView.swift" \
+  "$DIR/Sources/RegistryView.swift" \
   "$DIR/Sources/ContentView.swift" \
   "$DIR/Sources/App.swift" \
   -o "$MACOS/KNOT"

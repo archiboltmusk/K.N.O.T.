@@ -33,6 +33,7 @@ from app.engine.concierge import generate_first_date_itinerary
 from app.engine.observer import generate_elder_observer_pass
 from app.engine.kyc import verify_digilocker_identity, sign_single_status_affidavit
 from app.engine.zkp import generate_zk_income_proof, generate_zk_compatibility_proof
+from app.engine.registry import calculate_milestone_velocity, generate_default_registry
 
 
 class TestKnotProductionEngine(unittest.TestCase):
@@ -165,6 +166,20 @@ class TestKnotProductionEngine(unittest.TestCase):
         tampered_payload["guna_milan"] = "36/36"  # Tampered!
         is_tampered_valid = verify_vault_hash(tampered_payload, h)
         self.assertFalse(is_tampered_valid)
+
+    def test_financial_registry(self):
+        registry = generate_default_registry("Rahul", "Pooja")
+        self.assertTrue(registry.anti_dowry_charter_signed)
+        self.assertEqual(len(registry.goals), 3)
+
+        velocity = calculate_milestone_velocity(
+            target_amount=2500000.0,
+            current_amount=500000.0,
+            monthly_combined_savings=100000.0
+        )
+        self.assertEqual(velocity["remaining_amount_inr"], 2000000.0)
+        self.assertEqual(velocity["months_to_milestone"], 20.0)
+        self.assertEqual(velocity["monthly_contribution_per_partner"], 50000.0)
 
 
 if __name__ == "__main__":

@@ -4,6 +4,8 @@ public struct DailyDropsView: View {
     @State private var currentIndex: Int = 0
     @State private var blurPhotos: Bool = false
     @State private var showingVaultModal: Bool = false
+    @State private var showingRoseModal: Bool = false
+    @State private var intentionNoteText: String = ""
     @State private var likedPrompt: String? = nil
     
     private let candidates = SampleCandidates.candidates
@@ -80,6 +82,11 @@ public struct DailyDropsView: View {
         .sheet(isPresented: $showingVaultModal) {
             if currentIndex < candidates.count {
                 vaultDossierModal(candidate: candidates[currentIndex])
+            }
+        }
+        .sheet(isPresented: $showingRoseModal) {
+            if currentIndex < candidates.count {
+                roseIntentionModal(candidate: candidates[currentIndex])
             }
         }
     }
@@ -521,35 +528,50 @@ public struct DailyDropsView: View {
         .cornerRadius(8)
     }
     
-    // MARK: - Action Dock (Pass, Vault, Connect)
+    // MARK: - Action Dock (Pass, Vault, Rose, Connect)
     private func actionDock(candidate: CandidateCardData) -> some View {
-        HStack(spacing: 20) {
+        HStack(spacing: 16) {
             // Pass Button
             Button(action: nextCandidate) {
                 ZStack {
                     Circle()
                         .fill(KnotTheme.bgCard)
-                        .frame(width: 54, height: 54)
+                        .frame(width: 52, height: 52)
                         .overlay(Circle().stroke(KnotTheme.border, lineWidth: 1))
                     Image(systemName: "xmark")
-                        .font(.system(size: 20, weight: .bold))
+                        .font(.system(size: 18, weight: .bold))
                         .foregroundColor(.secondary)
                 }
             }
             .buttonStyle(.plain)
             .help("Pass introduction")
             
+            // Send Rose with Note (Hinge Standout Feature)
+            Button(action: { showingRoseModal = true }) {
+                ZStack {
+                    Circle()
+                        .fill(KnotTheme.bgCard)
+                        .frame(width: 52, height: 52)
+                        .overlay(Circle().stroke(Color.pink.opacity(0.5), lineWidth: 1.5))
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 20))
+                        .foregroundColor(.pink)
+                }
+            }
+            .buttonStyle(.plain)
+            .help("Send a Rose with an Intention Note")
+            
             // Family-Ready Vault Button
             Button(action: { showingVaultModal = true }) {
-                HStack(spacing: 8) {
+                HStack(spacing: 6) {
                     Image(systemName: "doc.badge.shield.checkmark.fill")
                         .foregroundColor(KnotTheme.gold)
                     Text("Family Vault")
                         .font(.subheadline.bold())
                         .foregroundColor(.white)
                 }
-                .padding(.horizontal, 18)
-                .frame(height: 54)
+                .padding(.horizontal, 16)
+                .frame(height: 52)
                 .background(KnotTheme.bgCard)
                 .overlay(
                     Capsule().stroke(KnotTheme.gold.opacity(0.35), lineWidth: 1.5)
@@ -567,14 +589,70 @@ public struct DailyDropsView: View {
                         .font(.headline)
                 }
                 .foregroundColor(.black)
-                .padding(.horizontal, 28)
-                .frame(height: 54)
+                .padding(.horizontal, 24)
+                .frame(height: 52)
                 .background(KnotTheme.goldGradient)
                 .clipShape(Capsule())
                 .shadow(color: KnotTheme.gold.opacity(0.3), radius: 10, y: 4)
             }
             .buttonStyle(.plain)
         }
+    }
+    
+    // MARK: - Rose with Intention Note Modal
+    private func roseIntentionModal(candidate: CandidateCardData) -> some View {
+        VStack(spacing: 20) {
+            Image(systemName: "heart.fill")
+                .font(.system(size: 40))
+                .foregroundColor(.pink)
+            
+            Text("Send Intention Rose to \(candidate.name)")
+                .font(.title2.bold())
+                .foregroundColor(.white)
+            
+            Text("Skip the queue. Sending a Rose with a thoughtful intention note has a 3.4x higher response rate among verified high-intent members.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+            
+            TextEditor(text: $intentionNoteText)
+                .font(.body)
+                .padding(10)
+                .background(KnotTheme.bgCard)
+                .cornerRadius(10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(KnotTheme.borderGold, lineWidth: 1)
+                )
+                .frame(height: 120)
+            
+            HStack(spacing: 12) {
+                Button("Cancel") {
+                    showingRoseModal = false
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+                .background(Color.secondary.opacity(0.2))
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .buttonStyle(.plain)
+                
+                Button("Send Rose & Note") {
+                    showingRoseModal = false
+                    intentionNoteText = ""
+                    nextCandidate()
+                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 10)
+                .background(KnotTheme.gold)
+                .foregroundColor(.black)
+                .cornerRadius(8)
+                .buttonStyle(.plain)
+            }
+        }
+        .padding(28)
+        .frame(width: 480, height: 380)
+        .background(KnotTheme.bgDeep)
     }
     
     // MARK: - Right Inspector Sidebar
